@@ -4,8 +4,12 @@ import { getPrismaErrorMessage } from "@/lib/prisma-errors";
 /**
  * Get latest properties
  */
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export async function getLatestProperties(take: number = 9) {
   try {
+    await wait(3000);
     const properties = await prisma.property.findMany({
       take,
       orderBy: { createdAt: "desc" },
@@ -36,8 +40,6 @@ export async function getPromotedProperties(take: number = 9) {
 /**
  * Get all properties with pagination
  */
-
-//const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function getAllProperties(take: number = 12, skip: number = 0) {
   try {
