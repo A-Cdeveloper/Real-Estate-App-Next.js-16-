@@ -1,29 +1,21 @@
 import { Card, CardTitle } from "@/components/ui/card";
 import { News } from "@prisma/client";
-import { Calendar } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import NewsDate from "./detail/NewsDate";
+import NewsImage from "./detail/NewsImage";
 
 const NewsGridtem = ({ newsItem }: { newsItem: News }) => {
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-shadow p-0">
+    <Card className="group overflow-hidden hover:shadow-md transition-shadow p-0 hover:bg-muted">
       <Link href={`/news/${newsItem.id}`}>
-        {newsItem.image && (
-          <div className="relative h-56 w-full overflow-hidden bg-muted">
-            <Image
-              src={newsItem.image}
-              alt={newsItem.title}
-              fill
-              className="object-cover"
-              unoptimized
-            />
-          </div>
-        )}
+        <NewsImage
+          newsItem={newsItem}
+          className="h-56 w-full rounded-none"
+          newsImageClassName="group-hover:scale-105 transition-transform duration-300"
+        />
+
         <div className="p-6">
-          <div className="flex items-center gap-2 text-muted-foreground font-nunito-sans text-xs mb-3">
-            <Calendar className="w-4 h-4" />
-            <span>{newsItem.createdAt.toLocaleDateString()}</span>
-          </div>
+          <NewsDate date={newsItem.createdAt} className="mb-3" />
           <CardTitle className="font-nunito font-semibold text-lg mb-3 line-clamp-2">
             {newsItem.title}
           </CardTitle>

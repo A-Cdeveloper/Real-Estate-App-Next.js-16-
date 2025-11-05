@@ -8,6 +8,7 @@ import { getPrismaErrorMessage } from "@/lib/prisma-errors";
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function getLatestNews(take: number = 5) {
+  await wait(3000);
   try {
     const news = await prisma.news.findMany({
       take,
@@ -49,7 +50,6 @@ export async function getAllNews(take: number = 12, skip: number = 0) {
  * Get news by ID
  */
 export async function getNewsById(id: string) {
-  await wait(4000);
   try {
     const newsItem = await prisma.news.findUnique({
       where: { id },

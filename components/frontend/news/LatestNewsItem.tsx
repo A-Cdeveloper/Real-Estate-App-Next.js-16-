@@ -1,48 +1,26 @@
-import { Card, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { News } from "@prisma/client";
-import { Calendar } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import NewsDate from "./detail/NewsDate";
+import NewsImage from "./detail/NewsImage";
 
 const LatestNewsItem = ({ newsItem }: { newsItem: News }) => {
   return (
-    <Card className="py-2 rounded-none border-0 border-b border-border pb-4 bg-transparent shadow-none">
-      <div className="flex gap-4 px-2">
-        <Link
-          href={`/news/${newsItem.id}`}
-          className="w-20 h-20 flex-shrink-0 relative overflow-hidden rounded-md bg-muted"
-        >
-          {newsItem.image && (
-            <Image
-              src={newsItem.image}
-              alt={newsItem.title}
-              fill
-              className="object-cover"
-              unoptimized
-            />
-          )}
-        </Link>
+    <Card className="py-4 rounded-none border-0 border-b border-border bg-transparent shadow-none hover:bg-muted transition-colors">
+      <Link href={`/news/${newsItem.id}`} className="flex gap-4 px-2">
+        <NewsImage newsItem={newsItem} className="w-25 h-25 flex-shrink-0" />
         <div className="flex-1 flex flex-col justify-between">
           <div>
-            <span className="text-muted-foreground font-nunito-sans text-xs mb-1 flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
-              <span>{newsItem.createdAt.toLocaleDateString()}</span>
-            </span>
-            <CardTitle>
-              <Link href={`/news/${newsItem.id}`}>{newsItem.title}</Link>
+            <NewsDate date={newsItem.createdAt} className="mb-1" />
+            <CardTitle className="font-nunito font-semibold text-base mb-2 line-clamp-2">
+              {newsItem.title}
             </CardTitle>
-            <p className="text-muted-foreground font-nunito-sans text-sm line-clamp-2">
+            <CardDescription className="text-muted-foreground font-nunito-sans text-sm line-clamp-2 mb-4">
               {newsItem.description}
-              <Link
-                href={`/news/${newsItem.id}`}
-                className="text-primary/70 font-nunito-sans text-sm px-2"
-              >
-                read more
-              </Link>
-            </p>
+            </CardDescription>
           </div>
         </div>
-      </div>
+      </Link>
     </Card>
   );
 };

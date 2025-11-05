@@ -40,9 +40,12 @@ const RealtyDetailPage = async ({ params }: { params: Params }) => {
         <div className="absolute inset-0 bg-black/40" />
 
         {/* Back Button */}
-        <div className="absolute top-6 left-6 z-10">
-          <BackButton href="/proprietes" label="Back to Properties" />
-        </div>
+
+        <BackButton
+          href="/proprietes"
+          label="Back to Properties"
+          className="absolute top-6 left-6 z-10"
+        />
 
         {/* Property Title Overlay */}
         <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-8">
