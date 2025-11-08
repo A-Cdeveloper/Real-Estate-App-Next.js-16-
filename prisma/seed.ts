@@ -1,5 +1,154 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, Prisma, PropertyType } from "@prisma/client";
 const prisma = new PrismaClient();
+
+// Helper funkcija za određivanje tipa nekretnine na osnovu naziva
+function getPropertyType(name: string, address?: string): PropertyType {
+  const lowerName = name.toLowerCase();
+  const lowerAddress = address?.toLowerCase() || "";
+
+  if (
+    lowerName.includes("office") ||
+    lowerName.includes("commercial") ||
+    lowerName.includes("retail") ||
+    lowerName.includes("warehouse") ||
+    lowerName.includes("business") ||
+    lowerName.includes("garage unit")
+  ) {
+    return PropertyType.Commercial;
+  }
+
+  if (
+    lowerName.includes("house") ||
+    lowerName.includes("villa") ||
+    lowerName.includes("cottage") ||
+    lowerName.includes("cabin") ||
+    lowerName.includes("farm") ||
+    lowerName.includes("home") ||
+    lowerName.includes("duplex")
+  ) {
+    return PropertyType.House;
+  }
+
+  return PropertyType.Apartment;
+}
+
+// Helper funkcija za koordinate na osnovu adrese
+function getCoordinates(address: string): { lat: number; lng: number } | null {
+  const lowerAddress = address.toLowerCase();
+
+  // Belgrade koordinate
+  if (
+    lowerAddress.includes("belgrade") ||
+    lowerAddress.includes("beograd") ||
+    lowerAddress.includes("zvezdara") ||
+    lowerAddress.includes("vračar") ||
+    lowerAddress.includes("dorćol") ||
+    lowerAddress.includes("knez mihailova") ||
+    lowerAddress.includes("kalemegdan") ||
+    lowerAddress.includes("novi beograd") ||
+    lowerAddress.includes("block") ||
+    lowerAddress.includes("tašmajdan") ||
+    lowerAddress.includes("savski venac") ||
+    lowerAddress.includes("dedinje") ||
+    lowerAddress.includes("belgrade center") ||
+    lowerAddress.includes("belgrade waterfront") ||
+    lowerAddress.includes("belgrade suburbs")
+  ) {
+    return { lat: 44.7866, lng: 20.4489 }; // Belgrade center
+  }
+
+  // Novi Sad
+  if (
+    lowerAddress.includes("novi sad") ||
+    lowerAddress.includes("liman") ||
+    lowerAddress.includes("telep") ||
+    lowerAddress.includes("petrovaradin")
+  ) {
+    return { lat: 45.2671, lng: 19.8335 };
+  }
+
+  // Niš
+  if (lowerAddress.includes("niš") || lowerAddress.includes("medijana") || lowerAddress.includes("palilula")) {
+    return { lat: 43.3209, lng: 21.8958 };
+  }
+
+  // Subotica
+  if (lowerAddress.includes("subotica")) {
+    return { lat: 46.1005, lng: 19.6656 };
+  }
+
+  // Kragujevac
+  if (lowerAddress.includes("kragujevac")) {
+    return { lat: 44.0128, lng: 20.9114 };
+  }
+
+  // Zlatibor
+  if (lowerAddress.includes("zlatibor")) {
+    return { lat: 43.7294, lng: 19.7128 };
+  }
+
+  // Valjevo
+  if (lowerAddress.includes("valjevo")) {
+    return { lat: 44.2751, lng: 19.8882 };
+  }
+
+  // Sremska Mitrovica
+  if (lowerAddress.includes("sremska mitrovica")) {
+    return { lat: 44.9764, lng: 19.6122 };
+  }
+
+  // Pančevo
+  if (lowerAddress.includes("pančevo")) {
+    return { lat: 44.8708, lng: 20.6404 };
+  }
+
+  // Zemun
+  if (lowerAddress.includes("zemun")) {
+    return { lat: 44.8458, lng: 20.4012 };
+  }
+
+  // Čačak
+  if (lowerAddress.includes("čačak")) {
+    return { lat: 43.8914, lng: 20.3497 };
+  }
+
+  // Leskovac
+  if (lowerAddress.includes("leskovac")) {
+    return { lat: 42.9981, lng: 21.9461 };
+  }
+
+  // Kraljevo
+  if (lowerAddress.includes("kraljevo")) {
+    return { lat: 43.7259, lng: 20.6896 };
+  }
+
+  // Aranđelovac
+  if (lowerAddress.includes("aranđelovac")) {
+    return { lat: 44.3075, lng: 20.5603 };
+  }
+
+  // Fruška Gora
+  if (lowerAddress.includes("fruška gora")) {
+    return { lat: 45.15, lng: 19.75 };
+  }
+
+  // Perućac Lake
+  if (lowerAddress.includes("perućac")) {
+    return { lat: 44.0167, lng: 19.4167 };
+  }
+
+  // Tara National Park
+  if (lowerAddress.includes("tara")) {
+    return { lat: 43.9167, lng: 19.4167 };
+  }
+
+  // Montenegro locations
+  if (lowerAddress.includes("budva") || lowerAddress.includes("herceg novi")) {
+    return { lat: 42.2864, lng: 18.8414 }; // Budva
+  }
+
+  return null;
+}
 
 async function main() {
   // Obrišemo postojeće podatke (idempotent seed)
@@ -501,8 +650,21 @@ async function main() {
     },
   ];
 
+  // Dodajemo type, lat i lng za svaku nekretninu
+  const propertiesWithTypeAndCoords = properties.map((property) => {
+    const type = getPropertyType(property.name, property.address || undefined);
+    const coords = property.address ? getCoordinates(property.address) : null;
+
+    return {
+      ...property,
+      type,
+      lat: coords?.lat ?? null,
+      lng: coords?.lng ?? null,
+    };
+  });
+
   // Insert svih 50 properties
-  await prisma.property.createMany({ data: properties });
+  await prisma.property.createMany({ data: propertiesWithTypeAndCoords });
 
   // Dobijamo sve kreirane properties da bismo dodali gallery slike
   const createdProperties = await prisma.property.findMany({

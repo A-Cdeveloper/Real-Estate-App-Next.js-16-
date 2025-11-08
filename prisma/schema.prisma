@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PropertyType {
+  Apartment
+  House
+  Commercial
+}
+
 model User {
   id         String     @id @default(cuid()) // unikatan string ID
   email      String     @unique
@@ -19,9 +25,12 @@ model User {
 model Property {
   id          String          @id @default(cuid())
   name        String
+  type        PropertyType?
   price       Float
   area        Float? // kvadratura u m²
   address     String?
+  lat         Float? // latitude koordinata
+  lng         Float? // longitude koordinata
   description String?         @db.Text // opis nekretnine
   image       String? // URL glavne slike nekretnine
   promoted    Boolean         @default(false) // izdvojena nekretnina

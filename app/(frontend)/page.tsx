@@ -8,6 +8,7 @@ import RealtyStats from "@/components/frontend/proprietes/RealtyStats";
 import CarouselSkeleton from "@/components/frontend/skeletons/CarouselSkeleton";
 import LatestNewsSkeleton from "@/components/frontend/skeletons/LatestNewsSkeleton";
 import { Suspense } from "react";
+import Hero from "@/components/frontend/layout/Hero";
 
 export const metadata: Metadata = {
   title: `${APP_NAME} | Find Your Perfect Property`,
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   return (
     <>
-      {/* <Hero /> */}
+      <Hero />
 
       <section className="container mx-auto px-4 lg:px-8 py-12">
         <div className="space-y-12">
