@@ -4,14 +4,11 @@ import { PropertyWithOwner } from "@/types/properties";
 import { Mail, User } from "lucide-react";
 import Link from "next/link";
 
-const RealyAgent = ({ property }: { property: PropertyWithOwner }) => {
+const RealtyAgent = ({ property }: { property: PropertyWithOwner }) => {
   return (
-    <div className="space-y-6">
+    <>
       {/* Contact Card */}
       <Card className="sticky top-6">
-        <CardHeader>
-          <CardTitle className="font-nunito text-xl">Contact Agent</CardTitle>
-        </CardHeader>
         <CardContent className="space-y-4">
           {property.owner && (
             <div className="flex items-center gap-3 pb-4 border-b">
@@ -38,8 +35,8 @@ const RealyAgent = ({ property }: { property: PropertyWithOwner }) => {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </>
   );
 };
 
-export default RealyAgent;
+export default RealtyAgent;

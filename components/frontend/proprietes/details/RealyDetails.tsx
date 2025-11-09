@@ -1,16 +1,30 @@
+import { Card, CardContent } from "@/components/ui/card";
 import { PropertyWithOwner } from "@/types/properties";
-import { Square } from "lucide-react";
-import { Calendar } from "lucide-react";
-import { MapPin } from "lucide-react";
-import { formatLongDate } from "@/lib/utils/date";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LayoutDashboard, MapPin, Square } from "lucide-react";
+
+const RealyDetailsWidget = ({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+}) => {
+  return (
+    <div className="p-4 bg-muted/50 rounded-lg flex items-center gap-3">
+      {icon}
+      <div className="flex-1 min-w-0">
+        <p className="text-muted-foreground text-sm">{label}</p>
+        <p className="font-semibold text-xl">{value}</p>
+      </div>
+    </div>
+  );
+};
 
 const RealyDetails = ({ property }: { property: PropertyWithOwner }) => {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="font-nunito text-2xl">Property Details</CardTitle>
-      </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-center justify-between pb-4 border-b">
           <div>
@@ -36,40 +50,26 @@ const RealyDetails = ({ property }: { property: PropertyWithOwner }) => {
 
         {/* Key Features Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="p-4 bg-muted/50 rounded-lg flex items-center gap-3">
-            <Calendar className="w-5 h-5 text-primary flex-shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="font-nunito-sans font-semibold text-sm">Listed</p>
-              <p className="font-nunito-sans text-sm">
-                {formatLongDate(property.createdAt)}
-              </p>
-            </div>
-          </div>
+          <RealyDetailsWidget
+            label="Type"
+            value={property.type || "N/A"}
+            icon={
+              <LayoutDashboard className="w-8 h-8 text-primary flex-shrink-0" />
+            }
+          />
           {property.address && (
-            <div className="p-4 bg-muted/50 rounded-lg flex items-center gap-3">
-              <MapPin className="w-5 h-5 text-primary flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="font-nunito-sans font-semibold text-sm">
-                  Location
-                </p>
-                <p className="font-nunito text-sm line-clamp-2">
-                  {property.address}
-                </p>
-              </div>
-            </div>
+            <RealyDetailsWidget
+              label="Location"
+              value={property.address}
+              icon={<MapPin className="w-8 h-8 text-primary flex-shrink-0" />}
+            />
           )}
           {property.area && (
-            <div className="p-4 bg-muted/50 rounded-lg flex items-center gap-3">
-              <Square className="w-5 h-5 text-primary flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="font-nunito-sans font-semibold text-sm">
-                  Price per m²
-                </p>
-                <p className="font-nunito font-semibold">
-                  €{Math.round(property.price / property.area).toLocaleString()}
-                </p>
-              </div>
-            </div>
+            <RealyDetailsWidget
+              label="Price per m²"
+              value={`€${Math.round(property.price / property.area).toLocaleString()}`}
+              icon={<Square className="w-8 h-8 text-primary flex-shrink-0" />}
+            />
           )}
         </div>
       </CardContent>

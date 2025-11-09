@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { APP_NAME, SITE_URL } from "@/lib/constants";
 import PropertyGallery from "@/components/frontend/proprietes/details/PropertyGallery";
 import RealtyTopImage from "@/components/frontend/proprietes/details/RealtyTopImage";
-import RealyAgent from "@/components/frontend/proprietes/details/RealyAgent";
+import RealtyAgent from "@/components/frontend/proprietes/details/RealtyAgent";
 import RealyDescription from "@/components/frontend/proprietes/details/RealyDescription";
 import RealyDetails from "@/components/frontend/proprietes/details/RealyDetails";
 import {
@@ -10,6 +10,7 @@ import {
   getRecentPropertyIds,
 } from "@/lib/queries/properties";
 import { notFound } from "next/navigation";
+import RealtyLocationMap from "@/components/frontend/proprietes/details/RealtyLocationMap";
 
 type Params = Promise<{ id: string }>;
 
@@ -98,7 +99,13 @@ const RealtyDetailPage = async ({ params }: { params: Params }) => {
           </div>
 
           {/* Right Column - Contact & Owner Info */}
-          <RealyAgent property={property} />
+          <div className="space-y-6">
+            <RealtyLocationMap
+              latitude={property.lat || 0}
+              longitude={property.lng || 0}
+            />
+            <RealtyAgent property={property} />
+          </div>
         </div>
       </section>
     </>

@@ -5,9 +5,6 @@ const RealyDescription = ({ description }: { description: string }) => {
   if (!description) return null;
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="font-nunito text-2xl">Description</CardTitle>
-      </CardHeader>
       <CardContent>
         <p className="font-nunito-sans text-muted-foreground leading-relaxed">
           {description}
