@@ -2,6 +2,12 @@ export const APP_NAME = "Real Estate Pro";
 export const APP_DESCRIPTION =
   "Find your perfect property with Real Estate Pro. Browse listings, explore neighborhoods, and connect with expert agents.";
 
+// Contact Information
+export const CONTACT_ADDRESS =
+  "120 Bay Street, Suite 1800, Toronto, ON M5J 2N8, Canada";
+export const CONTACT_PHONE = "+1 (647) 987-4321";
+export const CONTACT_EMAIL = "hello@realestatepro.com";
+
 // SEO & Metadata
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://realestatepro.com";

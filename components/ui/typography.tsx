@@ -12,7 +12,7 @@ const typographyVariants = cva("", {
       h4: "font-nunito text-lg md:text-xl font-semibold tracking-tight",
       h5: "font-nunito text-lg md:text-xl font-semibold",
       h6: "font-nunito text-base md:text-lg font-semibold",
-      p: "font-nunito-sans text-base leading-7",
+      p: "font-nunito-sans text-base leading-relaxed",
       lead: "font-nunito-sans text-lg md:text-xl text-muted-foreground",
       small: "font-nunito-sans text-sm text-muted-foreground",
       muted: "font-nunito-sans text-sm text-muted-foreground",
