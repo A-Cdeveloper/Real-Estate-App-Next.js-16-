@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, PropertyType } from "@prisma/client";
 
 /**
  * Type for property with owner information (id, name, email) and gallery images
@@ -26,3 +26,15 @@ export type PropertyWithGallery = Prisma.PropertyGetPayload<{
     gallery: true;
   };
 }>;
+
+/**
+ * Type for property filters
+ * Used in usePropertyFilters hook and getAllProperties query
+ * Prices are strings because they come from input fields
+ */
+export type PropertyFilters = {
+  type?: PropertyType;
+  location?: string;
+  minPrice?: string;
+  maxPrice?: string;
+};

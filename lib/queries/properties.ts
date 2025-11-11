@@ -4,6 +4,7 @@ import {
   LATEST_PROPERTIES_COUNT,
   PROMOTED_PROPERTIES_COUNT,
 } from "@/lib/constants";
+import { PropertyFilters } from "@/types/properties";
 
 /**
  * Get latest properties
@@ -43,18 +44,39 @@ export async function getPromotedProperties(
 }
 
 /**
- * Get all properties with pagination
+ * Get all properties with pagination and filters
  */
 
-export async function getAllProperties(take: number = 12, skip: number = 0) {
+export async function getAllProperties(
+  take: number = 12,
+  skip: number = 0,
+  filters?: PropertyFilters
+) {
   try {
+    const minPrice = filters?.minPrice ? Number(filters.minPrice) : undefined;
+    const maxPrice = filters?.maxPrice ? Number(filters.maxPrice) : undefined;
+
+    const where = {
+      ...(filters?.type && { type: filters.type }),
+      ...(filters?.location && {
+        address: { contains: filters.location },
+      }),
+      ...((minPrice || maxPrice) && {
+        price: {
+          ...(minPrice && { gte: minPrice }),
+          ...(maxPrice && { lte: maxPrice }),
+        },
+      }),
+    };
+
     const [properties, total] = await Promise.all([
       prisma.property.findMany({
         take,
         skip,
+        where,
         orderBy: { createdAt: "desc" },
       }),
-      prisma.property.count(),
+      prisma.property.count({ where }),
     ]);
 
     return {
