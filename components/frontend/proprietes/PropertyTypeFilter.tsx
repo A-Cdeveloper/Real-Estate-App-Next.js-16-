@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { X, Search } from "lucide-react";
 import { usePropertyFilters } from "./hooks/usePropertyFilters";
+import { cn } from "@/lib/utils";
 
 type FilterErrorMessageProps = {
   message: string;
@@ -34,9 +35,15 @@ const FilterErrorMessage = ({ message }: FilterErrorMessageProps) => {
 
 type PropertyTypeFilterProps = {
   initialParams?: { [key: string]: string | undefined };
+  className?: string;
+  clearRoute?: string;
 };
 
-const PropertyTypeFilter = ({ initialParams }: PropertyTypeFilterProps) => {
+const PropertyTypeFilter = ({
+  initialParams,
+  className,
+  clearRoute,
+}: PropertyTypeFilterProps) => {
   const {
     location,
     setLocation,
@@ -49,10 +56,11 @@ const PropertyTypeFilter = ({ initialParams }: PropertyTypeFilterProps) => {
     handleFilter,
     handleClear,
     errors,
-  } = usePropertyFilters(initialParams);
+    hasActiveFilters,
+  } = usePropertyFilters(initialParams, clearRoute);
 
   return (
-    <form onSubmit={handleFilter} className="space-y-4">
+    <form onSubmit={handleFilter} className={cn("space-y-4", className)}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Location Input */}
         <CustomInput
@@ -117,15 +125,17 @@ const PropertyTypeFilter = ({ initialParams }: PropertyTypeFilterProps) => {
 
       {/* Search Button */}
       <div className="flex gap-4 justify-end">
-        <Button
-          type="button"
-          size="lg"
-          onClick={handleClear}
-          className="font-nunito-sans font-semibold bg-secondary hover:bg-secondary/70 dark:text-foreground"
-        >
-          <X className="w-5 h-5" aria-hidden="true" />
-          Clear Filters
-        </Button>
+        {hasActiveFilters && (
+          <Button
+            type="button"
+            size="lg"
+            onClick={handleClear}
+            className="font-nunito-sans font-semibold bg-secondary hover:bg-secondary/70 dark:text-foreground"
+          >
+            <X className="w-5 h-5" aria-hidden="true" />
+            Clear Filters
+          </Button>
+        )}
         <Button
           type="submit"
           size="lg"

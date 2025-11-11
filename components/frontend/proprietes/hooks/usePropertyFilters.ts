@@ -44,9 +44,12 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
   }
 }
 
-export const usePropertyFilters = (initialParams?: {
-  [key: string]: string | undefined;
-}) => {
+export const usePropertyFilters = (
+  initialParams?: {
+    [key: string]: string | undefined;
+  },
+  clearRoute?: string
+) => {
   const router = useRouter();
 
   // Initialize state from URL params if provided
@@ -113,8 +116,16 @@ export const usePropertyFilters = (initialParams?: {
   const handleClear = () => {
     dispatch({ type: "CLEAR_ALL" });
     setErrors({});
-    router.push("/proprietes");
+
+    router.push(clearRoute || "/proprietes");
   };
+
+  const hasActiveFilters = Boolean(
+    state.location.trim() ||
+      state.type ||
+      state.minPrice.trim() ||
+      state.maxPrice.trim()
+  );
 
   return {
     location: state.location,
@@ -136,5 +147,6 @@ export const usePropertyFilters = (initialParams?: {
     handleFilter,
     handleClear,
     errors,
+    hasActiveFilters,
   };
 };

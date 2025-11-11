@@ -34,7 +34,7 @@ const Hero = () => {
               designed for financial growth and stability
             </p>
 
-            <PropertyTypeFilter />
+            <PropertyTypeFilter clearRoute="/" />
           </Card>
         </div>
       </div>
