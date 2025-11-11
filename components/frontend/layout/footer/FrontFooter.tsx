@@ -35,6 +35,7 @@ const FrontFooter = () => {
             links={[
               { label: "Home", href: "/" },
               { label: "Properties", href: "/proprietes" },
+              { label: "News", href: "/news" },
             ]}
           />
           <MetaMenu
