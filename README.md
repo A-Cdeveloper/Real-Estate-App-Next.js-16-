@@ -14,7 +14,15 @@ This project is a comprehensive real estate application that demonstrates modern
 - Detailed property pages with image galleries
 - Lightbox modal for viewing property photos
 - Promoted and latest properties carousels
-- Property filtering and search capabilities
+- Advanced property filtering:
+  - Filter by location (address search)
+  - Filter by property type (Apartment, House, Commercial)
+  - Filter by price range (min/max price)
+  - URL-based filter persistence
+  - Zod validation for filter inputs
+  - Clear filters functionality
+- Hero search form on homepage
+- Property statistics (total listings, average price per m², recent additions)
 
 **News Section**
 
@@ -66,6 +74,7 @@ This project is a comprehensive real estate application that demonstrates modern
 - **tailwind-merge** - Merge Tailwind CSS classes
 - **class-variance-authority** - Component variants
 - **sonner** - Toast notifications
+- **zod** - Schema validation for form inputs and filters
 
 ## Prerequisites
 
@@ -159,6 +168,10 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 │   ├── frontend/                 # Frontend components
 │   │   ├── layout/               # Layout components
 │   │   ├── proprietes/          # Property components
+│   │   │   ├── hooks/            # Custom hooks (usePropertyFilters)
+│   │   │   ├── PropertyTypeFilter.tsx
+│   │   │   ├── ProprietesFilterWrapper.tsx
+│   │   │   └── ...               # Other property components
 │   │   ├── news/                 # News components
 │   │   ├── skeletons/            # Loading skeletons
 │   │   └── ...                   # Shared components
@@ -167,6 +180,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ├── lib/
 │   ├── queries/                  # Database query functions
 │   ├── actions/                  # Server actions
+│   ├── schemas/                   # Zod validation schemas
 │   ├── utils/                    # Utility functions
 │   ├── constants.ts              # Application constants
 │   ├── prisma.ts                 # Prisma client
@@ -180,6 +194,14 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ```
 
 ## Database Schema
+
+### PropertyType
+
+Enum values:
+
+- `Apartment` - Apartment listings
+- `House` - House listings
+- `Commercial` - Commercial property listings
 
 ### User
 
@@ -198,7 +220,10 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - `address` - Property address
 - `description` - Property description
 - `image` - Main property image URL
+- `type` - Property type (Apartment, House, Commercial)
 - `promoted` - Featured property flag
+- `latitude` - Geographic latitude
+- `longitude` - Geographic longitude
 - `createdAt` - Listing creation timestamp
 - `ownerId` - Foreign key to User
 - Relations: `owner` (User), `gallery` (PropertyImage\[\])
@@ -263,9 +288,23 @@ The application can be deployed to any platform that supports Next.js:
 
 ### React 19.2 Features
 
+- **Activity Component**: Used for show/hide filter functionality with state preservation
 - **useEffectEvent**: Optimized event handlers in Modal component
 - **Server Components**: Default rendering strategy for better performance
 - **Suspense Boundaries**: Progressive loading with improved UX
+- **useReducer**: State management for complex filter forms
+
+### Property Filtering
+
+The application implements a comprehensive filtering system:
+
+- **Filter Components**: `PropertyTypeFilter` with `usePropertyFilters` hook
+- **State Management**: `useReducer` for filter state with actions (SET_LOCATION, SET_TYPE, SET_MIN_PRICE, SET_MAX_PRICE, CLEAR_ALL)
+- **Validation**: Zod schema (`propertyFiltersSchema`) validates filter inputs and ensures maxPrice > minPrice
+- **URL Persistence**: Filters are stored in URL query parameters for shareable links
+- **Server-side Filtering**: Prisma queries with dynamic `where` clauses based on filter parameters
+- **Activity Integration**: `ProprietesFilterWrapper` uses React Activity component to show/hide filters while preserving state
+- **Context-aware Navigation**: `clearRoute` prop allows different navigation behavior on homepage vs properties page
 
 ### Performance Optimizations
 
@@ -276,10 +315,13 @@ The application can be deployed to any platform that supports Next.js:
 
 ### Code Organization
 
-- Clear separation of concerns (queries, actions, components)
+- Clear separation of concerns (queries, actions, components, schemas)
 - Reusable component architecture
 - Type-safe database operations
 - Consistent error handling patterns
+- Custom hooks for complex state logic (`usePropertyFilters`)
+- Utility functions for parsing and transforming data (`parsePropertySearchParams`)
+- Zod schemas for runtime validation
 
 ## License
 
