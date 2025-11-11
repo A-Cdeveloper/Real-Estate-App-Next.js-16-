@@ -62,7 +62,10 @@ const PropertySortSelect = () => {
   return (
     <div className="flex items-center gap-2">
       <Select value={currentSort || undefined} onValueChange={handleSortChange}>
-        <SelectTrigger className="w-[180px] bg-white dark:bg-background font-nunito-sans">
+        <SelectTrigger
+          className="w-[180px] bg-white dark:bg-background font-nunito-sans"
+          aria-label="Sort properties"
+        >
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
         <SelectContent>
