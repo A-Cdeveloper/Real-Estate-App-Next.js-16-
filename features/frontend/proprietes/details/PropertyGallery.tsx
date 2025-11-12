@@ -5,6 +5,7 @@ import { PropertyWithGallery } from "@/types/properties";
 import CustumImage from "@/components/shared/CustumImage";
 import { ZoomIn } from "lucide-react";
 import PropertyGalleryLightbox from "./PropertyGalleryLightbox";
+import { PropertyImage } from "@prisma/client";
 
 const PropertyGallery = ({ property }: { property: PropertyWithGallery }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -16,7 +17,7 @@ const PropertyGallery = ({ property }: { property: PropertyWithGallery }) => {
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {property.gallery.map((image, index) => (
+        {property.gallery.map((image: PropertyImage, index: number) => (
           <div
             key={image.id}
             role="button"

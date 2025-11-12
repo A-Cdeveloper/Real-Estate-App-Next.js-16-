@@ -6,6 +6,7 @@ import { getLatestNews } from "@/server/queries/news";
 import { LATEST_NEWS_COUNT } from "@/lib/constants";
 import EmptyState from "../EmptyState";
 import { cn } from "@/lib/utils";
+import { News } from "@prisma/client";
 
 const LatestNews = async ({
   count = LATEST_NEWS_COUNT,
@@ -39,7 +40,7 @@ const LatestNews = async ({
             className
           )}
         >
-          {latestNews.map((newsItem) => (
+          {latestNews.map((newsItem: News) => (
             <LatestNewsItem key={newsItem.id} newsItem={newsItem} />
           ))}
         </div>

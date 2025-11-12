@@ -24,7 +24,7 @@ export async function generateStaticParams() {
     // Only pre-generate the most recent 50 properties
     // Rest will be generated on-demand (ISG)
     const ids = await getRecentPropertyIds();
-    return ids.map((id) => ({ id }));
+    return ids.map((id: string) => ({ id }));
   } catch (error) {
     console.error("Error generating static params:", error);
     return [];

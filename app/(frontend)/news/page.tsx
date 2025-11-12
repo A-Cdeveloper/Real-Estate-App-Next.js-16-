@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { News } from "@prisma/client";
 import { APP_NAME, SITE_URL, NEWS_PER_PAGE } from "@/lib/constants";
 import EmptyState from "@/features/frontend/EmptyState";
 import NewsGridtem from "@/features/frontend/news/NewsGridtem";
@@ -79,7 +80,7 @@ const NewsList = async ({ page }: { page: number }) => {
         </Typography>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-        {news.map((newsItem) => (
+        {news.map((newsItem: News) => (
           <NewsGridtem key={newsItem.id} newsItem={newsItem} />
         ))}
       </div>

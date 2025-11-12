@@ -12,6 +12,7 @@ import EmptyState from "@/features/frontend/EmptyState";
 import ProprietesMeta from "@/features/frontend/proprietes/ProprietesMeta";
 import RealtyListItem from "@/features/frontend/proprietes/RealtyListItem";
 import PaginationControls from "@/components/shared/PaginationControls";
+import { Property } from "@prisma/client";
 
 const ProprietesList = async ({
   params,
@@ -50,7 +51,7 @@ const ProprietesList = async ({
     <>
       <ProprietesMeta start={start} end={end} total={total} />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-        {properties.map((property) => (
+        {properties.map((property: Property) => (
           <RealtyListItem key={property.id} property={property} />
         ))}
       </div>
