@@ -27,7 +27,7 @@ const PromotedProprietes = async () => {
       <CarouselCustum
         items={promotedProperties}
         render={(property) => <RealtyListItem property={property} />}
-        itemClassName="basis-full md:basis-1/2 lg:basis-1/2"
+        itemClassName="basis-full sm:basis-1/2 lg:basis-1/2"
       />
     </div>
   );

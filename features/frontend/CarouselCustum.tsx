@@ -10,7 +10,7 @@ import {
 const CarouselCustum = <T,>({
   items,
   render,
-  itemClassName = "pl-2 md:pl-4 basis-full md:basis-1/2 lg:basis-1/3",
+  itemClassName = "pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/2 xl:basis-1/3",
 }: {
   items: (T & { id: string })[];
   render: (item: T) => React.ReactNode;

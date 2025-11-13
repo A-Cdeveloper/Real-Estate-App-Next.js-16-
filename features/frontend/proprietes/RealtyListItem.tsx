@@ -9,7 +9,7 @@ import Link from "next/link";
 const RealtyListItem = ({ property }: { property: Property }) => {
   return (
     <Link href={`/proprietes/${property.id}`}>
-      <Card className="group overflow-hidden hover:shadow-md transition-shadow p-0 hover:bg-muted">
+      <Card className="group overflow-hidden hover:shadow-md transition-shadow p-0 hover:bg-muted h-full">
         <CustumImage
           src={property.image}
           alt={property.name}
@@ -17,7 +17,7 @@ const RealtyListItem = ({ property }: { property: Property }) => {
           showFallback={true}
         />
         <CardContent className="p-6 pt-0">
-          <CardTitle className="font-nunito font-semibold text-lg mb-2">
+          <CardTitle className="font-nunito font-semibold text-lg mb-2 h-auto md:h-auto xl:h-16 2xl:h-auto">
             {property.name}
           </CardTitle>
           {property.address && (
@@ -34,7 +34,7 @@ const RealtyListItem = ({ property }: { property: Property }) => {
               </span>
             </div>
           )}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap gap-2 items-center justify-between">
             <div>
               <span className="text-2xl font-nunito font-bold text-foreground">
                 €{property.price.toLocaleString()}
