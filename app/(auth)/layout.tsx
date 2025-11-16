@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 
 import { APP_DESCRIPTION, APP_NAME } from "@/lib/constants";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 // Lazy load Toaster - only loads when needed (when toast is triggered)
 const Toaster = dynamic(() =>
@@ -27,7 +28,9 @@ export default function AuthRootLayout({
       >
         Skip to main content
       </a>
-
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <main id="main-content" className="min-h-screen" role="main">
         {children}
       </main>
