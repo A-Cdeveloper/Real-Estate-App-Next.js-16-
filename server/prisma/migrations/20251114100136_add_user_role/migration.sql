@@ -19,10 +19,3 @@ ALTER TABLE `property` ADD CONSTRAINT `property_ownerId_fkey` FOREIGN KEY (`owne
 -- AddForeignKey
 ALTER TABLE `propertyimage` ADD CONSTRAINT `propertyimage_propertyId_fkey` FOREIGN KEY (`propertyId`) REFERENCES `property`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
--- RedefineIndex
-CREATE INDEX `propertyimage_propertyId_idx` ON `propertyimage`(`propertyId`);
-DROP INDEX `PropertyImage_propertyId_idx` ON `propertyimage`;
-
--- RedefineIndex
-CREATE UNIQUE INDEX `user_email_key` ON `user`(`email`);
-DROP INDEX `User_email_key` ON `user`;
