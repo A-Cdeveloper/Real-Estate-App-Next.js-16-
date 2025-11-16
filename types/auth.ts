@@ -13,8 +13,12 @@ export type LoginSuccessResponse = {
 
 export type LoginErrorResponse = {
   success: false;
-  error: string;
+  error?: string; // General error message (for backward compatibility)
+  errors?: Record<string, string[]>; // Field-level errors
+  data?: {
+    email: string;
+    password: string;
+  };
 };
 
 export type LoginResponse = LoginSuccessResponse | LoginErrorResponse;
-

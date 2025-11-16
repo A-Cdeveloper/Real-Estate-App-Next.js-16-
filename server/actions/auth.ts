@@ -5,49 +5,78 @@ import { getPrismaErrorMessage } from "@/server/prisma-errors";
 import { loginSchema } from "@/server/schemas/auth";
 import { verifyPassword } from "@/server/auth/password";
 import { createSession, deleteSession } from "@/server/auth/session";
+import { formatZodErrors } from "@/server/utils/zod";
+
 import type { LoginResponse } from "@/types/auth";
 
 /**
  * Server Action: Login user
  */
-export async function login(
-  email: string,
-  password: string
-): Promise<LoginResponse> {
-  try {
-    // Validate input
-    const validationResult = loginSchema.safeParse({ email, password });
-    if (!validationResult.success) {
-      return {
-        success: false,
-        error: validationResult.error.issues[0].message,
-      };
-    }
 
+export async function loginAction(
+  prevState: LoginResponse | null,
+  formData: FormData
+): Promise<LoginResponse> {
+  const rawData = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+  };
+
+  const result = loginSchema.safeParse(rawData);
+
+  if (!result.success) {
+    return {
+      success: false,
+      errors: formatZodErrors(result.error),
+      data: {
+        email: String(rawData.email || ""),
+        password: String(rawData.password || ""),
+      },
+    };
+  }
+
+  const { email, password } = result.data;
+
+  try {
     // Find user by email
     const user = await prisma.user.findUnique({
-      where: { email: validationResult.data.email },
+      where: { email },
     });
 
     if (!user) {
       return {
         success: false,
-        error: "Invalid email or password",
+        errors: {
+          email: ["No user found with this email address"],
+        },
+        data: {
+          email,
+          password: "",
+        },
       };
     }
 
     // Verify password
-    const isPasswordValid = await verifyPassword(
-      validationResult.data.password,
-      user.password
-    );
+    const isPasswordValid = await verifyPassword(password, user.password);
 
     if (!isPasswordValid) {
       return {
         success: false,
-        error: "Invalid email or password",
+        errors: {
+          _general: ["Wrong password"],
+        },
+        data: {
+          email,
+          password,
+        },
       };
     }
+
+    // Update lastLogin
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLogin: new Date() },
+    });
 
     // Create session
     await createSession(user.id, user.role);
@@ -65,7 +94,13 @@ export async function login(
     console.error("Login error:", error);
     return {
       success: false,
-      error: getPrismaErrorMessage(error),
+      errors: {
+        _general: [getPrismaErrorMessage(error)],
+      },
+      data: {
+        email,
+        password: "",
+      },
     };
   }
 }
