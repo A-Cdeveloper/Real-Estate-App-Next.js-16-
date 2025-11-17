@@ -3,13 +3,21 @@
 import { randomBytes } from "crypto";
 import prisma from "@/server/prisma";
 import { getPrismaErrorMessage } from "@/server/prisma-errors";
-import { loginSchema, forgotPasswordSchema } from "@/server/schemas/auth";
-import { verifyPassword } from "@/server/auth/password";
+import {
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from "@/server/schemas/auth";
+import { hashPassword, verifyPassword } from "@/server/auth/password";
 import { createSession, deleteSession } from "@/server/auth/session";
 import { formatZodErrors } from "@/server/utils/zod";
 import { sendPasswordResetEmail } from "@/server/mail/sendPasswordResetEmail";
 
-import type { LoginResponse, ForgotPasswordResponse } from "@/types/auth";
+import type {
+  LoginResponse,
+  ForgotPasswordResponse,
+  ResetPasswordResponse,
+} from "@/types/auth";
 
 /**
  * Server Action: Login user
@@ -195,6 +203,106 @@ export async function forgotPasswordAction(
       },
       data: {
         email,
+      },
+    };
+  }
+}
+
+/**
+ * Server Action: Reset password
+ * Validates token, checks expiry, and updates password
+ */
+export async function resetPasswordAction(
+  prevState: ResetPasswordResponse | null,
+  formData: FormData
+): Promise<ResetPasswordResponse> {
+  const rawData = {
+    password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
+    token: formData.get("token"),
+  };
+
+  const result = resetPasswordSchema.safeParse(rawData);
+
+  if (!result.success) {
+    return {
+      success: false,
+      errors: formatZodErrors(result.error),
+      data: {
+        password: String(rawData.password || ""),
+        confirmPassword: String(rawData.confirmPassword || ""),
+      },
+    };
+  }
+
+  const { password, token } = result.data;
+
+  try {
+    // Find user by reset token
+    const user = await prisma.user.findFirst({
+      where: {
+        passwordResetToken: token,
+      },
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        errors: {
+          _general: ["Invalid or expired reset token"],
+        },
+        data: {
+          password: "",
+          confirmPassword: "",
+        },
+      };
+    }
+
+    // Check if token has expired
+    if (
+      !user.passwordResetTokenExpiry ||
+      user.passwordResetTokenExpiry < new Date()
+    ) {
+      return {
+        success: false,
+        errors: {
+          _general: ["Reset token has expired. Please request a new one."],
+        },
+        data: {
+          password: "",
+          confirmPassword: "",
+        },
+      };
+    }
+
+    // Hash new password
+    const hashedPassword = await hashPassword(password);
+
+    // Update password and clear reset token
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        passwordResetToken: null,
+        passwordResetTokenExpiry: null,
+      },
+    });
+
+    return {
+      success: true,
+      message:
+        "Password reset successfully. You can now login with your new password.",
+    };
+  } catch (error) {
+    console.error("Reset password error:", error);
+    return {
+      success: false,
+      errors: {
+        _general: [getPrismaErrorMessage(error)],
+      },
+      data: {
+        password: "",
+        confirmPassword: "",
       },
     };
   }

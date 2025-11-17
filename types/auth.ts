@@ -42,3 +42,16 @@ export type ForgotPasswordResponse = ActionResponse<
   { message: string },
   { email: string }
 >;
+
+// Reset password response types
+export type ResetPasswordSuccessResponse = SuccessResponse<{
+  message: string;
+}>;
+export type ResetPasswordErrorResponse = ErrorResponse<{
+  password: string;
+  confirmPassword: string;
+}>;
+export type ResetPasswordResponse = ActionResponse<
+  { message: string },
+  { password: string; confirmPassword: string }
+>;
