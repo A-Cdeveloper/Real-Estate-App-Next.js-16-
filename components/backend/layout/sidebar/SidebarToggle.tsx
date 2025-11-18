@@ -12,10 +12,7 @@ const SidebarToggle = () => {
       variant="ghost"
       size="icon"
       onClick={() => setIsCollapsed((prev) => !prev)}
-      className={cn(
-        "mb-2 w-full",
-        isCollapsed ? "justify-center" : "justify-start"
-      )}
+      className="mb-2 !bg-muted-foreground/10 self-end"
     >
       <span className="sr-only">
         {isCollapsed ? "Open sidebar" : "Close sidebar"}

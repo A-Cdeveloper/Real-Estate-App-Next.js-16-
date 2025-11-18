@@ -14,9 +14,11 @@ const Navigation = () => {
   return (
     <nav
       className={cn(
-        "flex flex-1 flex-col px-2 py-4",
+        "flex flex-1 flex-col ps-4 pe-2 py-2",
         // Mobile and desktop: depends on collapsed state
-        isCollapsed ? "items-center space-y-2" : "items-start space-y-0"
+        isCollapsed
+          ? "items-center space-y-2 ps-2 pe-3.5"
+          : "items-start space-y-0"
       )}
     >
       <SidebarToggle />
@@ -33,13 +35,11 @@ const Navigation = () => {
             aria-label={item.label}
             title={item.label}
             className={cn(
-              "flex items-center rounded-lg px-3 py-2 text-base font-medium transition",
+              "flex items-center rounded-lg px-3 py-2 text-base font-semibold transition w-full hover:bg-primary/20 hover:text-foreground",
               // Mobile and desktop: depends on collapsed state
               isCollapsed ? "justify-center" : "justify-start gap-4",
               // Active state
-              isActive
-                ? "bg-secondary text-foreground"
-                : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+              isActive ? "bg-secondary text-primary" : "text-muted-foreground "
             )}
           >
             <Icon className="size-5" />
