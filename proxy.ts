@@ -36,6 +36,8 @@ export function proxy(request: NextRequest) {
     "/settings",
     "/users",
     "/proprietes-area",
+    "/notifications",
+    "/profile",
   ];
   const isBackendRoute = protectedBackendRoutes.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`)
@@ -88,6 +90,8 @@ export const config = {
     "/settings/:path*",
     "/users/:path*",
     "/proprietes-area/:path*",
+    "/notifications/:path*",
+    "/profile/:path*",
     "/login",
     "/forgot-password",
     "/reset-password/:path*",
