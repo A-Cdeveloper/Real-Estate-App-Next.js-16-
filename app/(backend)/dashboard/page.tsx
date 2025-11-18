@@ -1,14 +1,219 @@
-import { Spinner } from "@/components/shared/Spinner";
-
-const DashboardPage = () => {
+export default function DashboardPage() {
   return (
-    <section className="container mx-auto px-4 lg:px-8 py-12 h-screen">
-      <div className="flex justify-center items-center py-12 h-full">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <Spinner className="size-8" />
-      </div>
-    </section>
+    <div className="text-sm text-muted-foreground">
+      <p className="text-xl font-semibold text-foreground">
+        Content area placeholder
+      </p>
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>{" "}
+      <p className="mt-2">
+        This section is reserved for your custom widgets, charts or tables. You
+        can safely remove this placeholder once you start adding real content.
+        lorem:200 words Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quisquam, quos.
+      </p>
+    </div>
   );
-};
-
-export default DashboardPage;
+}
