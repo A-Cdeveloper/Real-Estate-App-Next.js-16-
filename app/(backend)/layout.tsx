@@ -1,40 +1,24 @@
-import type { Metadata } from "next";
-import dynamic from "next/dynamic";
+import Sidebar from "@/components/backend/layout/sidebar/Sidebar";
+import BackHeader from "@/components/backend/layout/header/BackHeader";
+import MainContent from "@/components/backend/layout/MainContent";
 
-import FrontFooter from "@/components/frontend/layout/footer/FrontFooter";
-import FrontHeader from "@/components/frontend/layout/header/FrontHeader";
-import { APP_NAME, APP_DESCRIPTION } from "@/lib/constants";
+import React from "react";
+import dynamic from "next/dynamic";
 
 // Lazy load Toaster - only loads when needed (when toast is triggered)
 const Toaster = dynamic(() =>
   import("@/components/ui/sonner").then((mod) => mod.Toaster)
 );
 
-export const metadata: Metadata = {
-  title: `${APP_NAME} - Admin Dashboard`,
-  description: APP_DESCRIPTION,
-};
-
-export default function BackendRootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const BackendLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      {/* Skip to main content link for screen readers */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
-      >
-        Skip to main content
-      </a>
-      <FrontHeader />
-      <main id="main-content" className="min-h-screen" role="main">
-        {children}
-      </main>
-      <FrontFooter />
+      <BackHeader />
+      <Sidebar />
+      <MainContent>{children}</MainContent>
       <Toaster />
     </>
   );
-}
+};
+
+export default BackendLayout;
