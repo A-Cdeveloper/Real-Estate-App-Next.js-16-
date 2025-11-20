@@ -1,4 +1,6 @@
-import React from "react";
+import ProfileView from "@/features/backend/profile/ProfileView";
+import PageHeader from "@/components/backend/layout/PageHeader";
+import { UserIcon } from "lucide-react";
 
 /**
  * ProfilePage component
@@ -6,7 +8,12 @@ import React from "react";
  * @returns {React.ReactNode} The ProfilePage component
  */
 const ProfilePage = () => {
-  return <div>ProfilePage</div>;
+  return (
+    <div>
+      <PageHeader title="Profile" icon={UserIcon} />
+      <ProfileView />
+    </div>
+  );
 };
 
 export default ProfilePage;
