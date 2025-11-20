@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+import { LoginUser } from "./user";
 
 // Base response types
 export type SuccessResponse<T> = {
@@ -14,17 +14,6 @@ export type ErrorResponse<TData = never> = {
 export type ActionResponse<TSuccess, TErrorData = never> =
   | SuccessResponse<TSuccess>
   | ErrorResponse<TErrorData>;
-
-// User types
-export type LoginUser = {
-  id: string;
-  email: string;
-  role: Role;
-};
-
-export type CurrentUser = LoginUser & {
-  name: string | null;
-};
 
 // Login response types
 export type LoginSuccessResponse = SuccessResponse<{ user: LoginUser }>;

@@ -15,7 +15,7 @@ const MainContent = ({ children }: { children: React.ReactNode }) => {
         isCollapsed ? "md:ml-16" : "md:ml-64"
       )}
     >
-      <div className="rounded-2xl bg-background/60 p-6 shadow-sm text-left">
+      <div className="rounded-2xl bg-background/60 p-6 text-left">
         {children}
       </div>
     </main>
