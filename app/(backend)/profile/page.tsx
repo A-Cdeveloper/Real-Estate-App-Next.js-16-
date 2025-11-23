@@ -5,7 +5,7 @@ import { UserIcon } from "lucide-react";
 /**
  * ProfilePage component
  * Displays the user's profile page
- * @returns {React.ReactNode} The ProfilePage component
+ * @returns The ProfilePage component
  */
 const ProfilePage = () => {
   return (
