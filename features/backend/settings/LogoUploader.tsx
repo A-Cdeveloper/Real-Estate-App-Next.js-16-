@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { removeLogo, uploadLogo } from "@/server/actions/settings";
+import { cn } from "@/lib/utils";
+import { LOGO_ALLOWED_TYPES, LOGO_MAX_FILE_SIZE } from "@/lib/constants";
 import { Loader2, TrashIcon, UploadIcon } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState, useTransition } from "react";
@@ -15,6 +17,27 @@ interface SingleLogoUploaderProps {
   logo: string | null;
 }
 
+// Helper function for type labels
+const getTypeLabel = (type: LogoType, capitalize = true): string => {
+  const label = type === "dark" ? "dark" : "light";
+  return capitalize ? label.charAt(0).toUpperCase() + label.slice(1) : label;
+};
+
+// File validation function
+const validateFile = (file: File): string | null => {
+  if (
+    !LOGO_ALLOWED_TYPES.includes(
+      file.type as (typeof LOGO_ALLOWED_TYPES)[number]
+    )
+  ) {
+    return "Only PNG, JPEG, JPG, SVG, and WebP images are allowed";
+  }
+  if (file.size > LOGO_MAX_FILE_SIZE) {
+    return "File size must be less than 5MB";
+  }
+  return null;
+};
+
 const SingleLogoUploader = ({ type, logo }: SingleLogoUploaderProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -22,21 +45,33 @@ const SingleLogoUploader = ({ type, logo }: SingleLogoUploaderProps) => {
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      startTransition(async () => {
-        const url = await uploadLogo(file, type);
-        if (url) {
-          setPreviewUrl(url);
-          toast.success(
-            `${type === "dark" ? "Dark" : "Light"} logo uploaded successfully`
-          );
-        } else {
-          toast.error(
-            `Failed to upload ${type === "dark" ? "dark" : "light"} logo`
-          );
-        }
-      });
+    if (!file) return;
+
+    // Validate file
+    const validationError = validateFile(file);
+    if (validationError) {
+      toast.error(validationError);
+      // Reset input
+      if (fileRef.current) {
+        fileRef.current.value = "";
+      }
+      return;
     }
+
+    // Upload file
+    startTransition(async () => {
+      const url = await uploadLogo(file, type);
+      if (url) {
+        setPreviewUrl(url);
+        toast.success(`${getTypeLabel(type)} logo uploaded successfully`);
+      } else {
+        toast.error(`Failed to upload ${getTypeLabel(type, false)} logo`);
+      }
+      // Reset input to allow uploading the same file again
+      if (fileRef.current) {
+        fileRef.current.value = "";
+      }
+    });
   };
 
   const triggerFileInput = () => {
@@ -44,15 +79,21 @@ const SingleLogoUploader = ({ type, logo }: SingleLogoUploaderProps) => {
   };
 
   const handleRemove = async () => {
+    if (
+      !confirm(
+        `Are you sure you want to remove the ${getTypeLabel(type, false)} logo?`
+      )
+    ) {
+      return;
+    }
+
     startTransition(async () => {
       const result = await removeLogo(type);
       if (result.success) {
         setPreviewUrl(null);
-        toast.success(`${type === "dark" ? "Dark" : "Light"} logo removed`);
+        toast.success(`${getTypeLabel(type)} logo removed`);
       } else {
-        toast.error(
-          `Failed to remove ${type === "dark" ? "dark" : "light"} logo`
-        );
+        toast.error(`Failed to remove ${getTypeLabel(type, false)} logo`);
       }
     });
   };
@@ -63,16 +104,22 @@ const SingleLogoUploader = ({ type, logo }: SingleLogoUploaderProps) => {
   return (
     <div className="space-y-2">
       <div
-        className={`flex items-center justify-between gap-2 border-1 border-dashed
-       dark:border-input border-gray-400/80 p-4 rounded-md ${type === "dark" ? "dark:bg-transparent bg-card-foreground" : "bg-transparent dark:bg-white"} `}
+        className={cn(
+          "flex items-center justify-between gap-2 border-1 border-dashed",
+          "dark:border-input border-gray-400/80 p-4 rounded-md",
+          type === "dark"
+            ? "dark:bg-transparent bg-card-foreground"
+            : "bg-transparent dark:bg-white"
+        )}
       >
         {imageSrc && !isPending ? (
           <>
             <Image
               src={imageSrc}
-              alt={`${type === "dark" ? "Dark" : "Light"} logo`}
+              alt={`${getTypeLabel(type)} logo`}
               width={100}
               height={100}
+              sizes="100px"
               className="object-contain"
             />
             <Button
@@ -103,10 +150,15 @@ const SingleLogoUploader = ({ type, logo }: SingleLogoUploaderProps) => {
                   variant="outline"
                   size="lg"
                   onClick={triggerFileInput}
-                  className={`w-full !bg-transparent !border-none ${type === "dark" ? "dark:text-white text-white" : "text-dark-foreground dark:text-secondary"}`}
+                  className={cn(
+                    "w-full !bg-transparent !border-none",
+                    type === "dark"
+                      ? "dark:text-white text-white"
+                      : "text-dark-foreground dark:text-secondary"
+                  )}
                 >
                   <UploadIcon className="size-4" />
-                  Upload {type === "dark" ? "Dark" : "Light"} Logo
+                  Upload {getTypeLabel(type)} Logo
                 </Button>
               </>
             ) : (
@@ -114,8 +166,13 @@ const SingleLogoUploader = ({ type, logo }: SingleLogoUploaderProps) => {
                 <Loader2 className="size-4 animate-spin" />
                 <span
                   aria-live="polite"
-                  aria-label={`Uploading ${type} logo`}
-                  className="text-sm"
+                  aria-label={`Uploading ${getTypeLabel(type, false)} logo`}
+                  className={cn(
+                    "text-sm",
+                    type === "dark"
+                      ? "dark:text-white text-white"
+                      : "text-dark-foreground dark:text-secondary"
+                  )}
                 >
                   Uploading...
                 </span>

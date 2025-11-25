@@ -44,3 +44,13 @@ export const USER_STATUS_OPTIONS = [
   { value: "active", label: "Active" },
   { value: "inactive", label: "Inactive" },
 ];
+
+// Logo upload validation constants
+export const LOGO_MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+export const LOGO_ALLOWED_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/svg+xml",
+  "image/webp",
+] as const;

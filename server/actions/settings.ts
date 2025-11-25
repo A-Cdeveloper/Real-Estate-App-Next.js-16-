@@ -11,6 +11,7 @@ import { formatZodErrors } from "../utils/zod";
 import { revalidatePath } from "next/cache";
 import { SettingsActionState } from "@/types/settings";
 import { pinata } from "../pinata/config";
+import { LOGO_ALLOWED_TYPES, LOGO_MAX_FILE_SIZE } from "@/lib/constants";
 /**
  * App settings update
  */
@@ -84,6 +85,21 @@ export const uploadLogo = async (
   type: "dark" | "light"
 ): Promise<string | null> => {
   try {
+    // Server-side validation
+    if (
+      !LOGO_ALLOWED_TYPES.includes(
+        file.type as (typeof LOGO_ALLOWED_TYPES)[number]
+      )
+    ) {
+      console.error("Invalid file type:", file.type);
+      return null;
+    }
+
+    if (file.size > LOGO_MAX_FILE_SIZE) {
+      console.error("File size too large:", file.size);
+      return null;
+    }
+
     // First, upload the file to IPFS
     const uploadResult = await pinata.upload.public.file(file);
     const cid = uploadResult.cid;
