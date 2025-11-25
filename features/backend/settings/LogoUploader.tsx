@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
-const LogoUploader = ({ logo }: { logo: string | null }) => {
+const LogoUploader = ({ logo_dark, logo_light }: { logo_dark: string | null; logo_light: string | null }) => {
   // uploadedFile will be used for actual file upload later
 
   const [_, setUploadedFile] = useState<File | null>(null);
@@ -44,8 +44,8 @@ const LogoUploader = ({ logo }: { logo: string | null }) => {
     }
   };
 
-  // Show preview if file uploaded, otherwise show existing logo
-  const imageSrc = previewUrl || logo;
+  // Show preview if file uploaded, otherwise show existing logo (prefer light, fallback to dark)
+  const imageSrc = previewUrl || logo_light || logo_dark;
 
   return (
     <div className="space-y-2">

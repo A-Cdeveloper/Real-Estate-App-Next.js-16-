@@ -22,7 +22,8 @@ export const updateSettingsFormSchema = z.object({
     .min(1, "Phone is required")
     .max(50, "Phone must be less than 50 characters"),
   email: emailSchema,
-  logo: z.string().nullish(), // Optional logo URL or path (can be null or undefined)
+  logo_dark: z.string().nullish(), // Optional dark mode logo URL or path (can be null or undefined)
+  logo_light: z.string().nullish(), // Optional light mode logo URL or path (can be null or undefined)
 });
 
 export type UpdateSettingsFormData = z.infer<typeof updateSettingsFormSchema>;

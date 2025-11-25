@@ -47,7 +47,7 @@ const SettingsForm = ({ settings }: { settings: UpdateSettings }) => {
     <div className="w-full xl:w-2/3">
       <form className="grid grid-cols-2 gap-4">
         <div className="space-y-4">
-          <LogoUploader logo={settings.logo ?? null} />
+          <LogoUploader logo_dark={settings.logo_dark ?? null} logo_light={settings.logo_light ?? null} />
           <div>
             <CustomInput
               id="app-name"

@@ -45,7 +45,8 @@ export async function updateSettings(
       address: data.address ?? existingSettings.address,
       phone: data.phone ?? existingSettings.phone,
       email: data.email ?? existingSettings.email,
-      logo: data.logo ?? existingSettings.logo,
+      logo_dark: data.logo_dark ?? existingSettings.logo_dark,
+      logo_light: data.logo_light ?? existingSettings.logo_light,
     };
 
     // Validate merged data with full schema
@@ -96,12 +97,12 @@ export const uploadLogo = async (file: File): Promise<string | null> => {
     // Convert CID to URL using gateway
     const url = await pinata.gateways.public.convert(cid);
 
-    // Update settings with logo URL
+    // Update settings with logo URL (update both dark and light for now)
     const existingSettings = await prisma.settings.findFirst();
     if (existingSettings) {
       await prisma.settings.update({
         where: { id: existingSettings.id },
-        data: { logo: url },
+        data: { logo_dark: url, logo_light: url },
       });
       revalidatePath("/settings");
     }
@@ -128,7 +129,7 @@ export const removeLogo = async () => {
   try {
     await prisma.settings.update({
       where: { id: existingSettings.id },
-      data: { logo: "" },
+      data: { logo_dark: null, logo_light: null },
     });
     revalidatePath("/settings");
     return { success: true };
