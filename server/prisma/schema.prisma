@@ -89,6 +89,8 @@ model Settings {
   email          String
   logo_dark      String? // URL or path to dark mode logo image
   logo_light     String? // URL or path to light mode logo image
+  lat            Float? // latitude koordinata
+  lng            Float? // longitude koordinata
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 

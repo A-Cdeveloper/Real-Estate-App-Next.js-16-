@@ -17,6 +17,8 @@ export const updateSettingsFormSchema = z.object({
     .string()
     .min(1, "Address is required")
     .max(200, "Address must be less than 200 characters"),
+  lat: z.number().optional(),
+  lng: z.number().optional(),
   phone: z
     .string()
     .min(1, "Phone is required")
