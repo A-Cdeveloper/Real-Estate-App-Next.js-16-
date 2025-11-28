@@ -46,11 +46,16 @@ This project is a comprehensive real estate application that demonstrates modern
 - Auto-save on blur for each field
 - Per-field error handling (errors don't clear each other)
 - Settings fields: app name, description, address, phone, email
-- Logo uploader (placeholder - to be implemented)
-- Map preview (placeholder - to be implemented)
+- Logo uploader with dark/light mode support (IPFS/Pinata integration)
+- Interactive map with Leaflet for location selection
+- Geocoding and reverse geocoding (address ↔ coordinates)
+- Social media links: Facebook, Instagram, X (Twitter), LinkedIn, YouTube
+- Location coordinates (latitude/longitude) for map display
+- Dynamic settings used throughout frontend (replaces hardcoded constants)
 - Singleton pattern (single settings record)
 - Partial update support for efficient data saving
 - Real-time validation with Zod schemas
+- Server-side file validation for logo uploads
 
 **Performance**
 
@@ -87,6 +92,8 @@ This project is a comprehensive real estate application that demonstrates modern
 - **class-variance-authority** - Component variants
 - **sonner** - Toast notifications
 - **zod** - Schema validation for form inputs and filters
+- **Leaflet & React-Leaflet** - Interactive maps with markers and geocoding
+- **Nominatim API** - Free geocoding and reverse geocoding service
 
 ## Prerequisites
 
@@ -173,6 +180,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 │   │   ├── users/                # Users management
 │   │   ├── proprietes-area/      # Properties management
 │   │   ├── notifications/        # Notifications
+│   │   ├── news-editor/          # News editor page
 │   │   └── layout.tsx            # Backend layout
 │   ├── (frontend)/               # Frontend application routes
 │   │   ├── page.tsx              # Homepage
@@ -224,7 +232,11 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 │       │   └── ProfileView.tsx
 │       └── settings/             # Application settings
 │           ├── SettingsForm.tsx  # Settings form with auto-save
-│           └── SettingsView.tsx  # Settings page view
+│           ├── SettingsView.tsx  # Settings page view
+│           ├── logo/             # Logo uploader components
+│           │   └── LogosUploader.tsx
+│           └── map/              # Map components
+│               └── MapClickHandler.tsx
 ├── components/
 │   ├── auth/                     # Authentication components
 │   │   ├── LoginForm.tsx
@@ -253,7 +265,10 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 │   │   ├── BackButton.tsx
 │   │   ├── PaginationControls.tsx
 │   │   ├── CustumImage.tsx
-│   │   └── Logo.tsx
+│   │   ├── Logo.tsx
+│   │   ├── LogoWithSettings.tsx  # Server component wrapper for Logo
+│   │   ├── MapDisplay.tsx         # Shared Leaflet map component
+│   │   └── CustumMarkerIcon.tsx  # Custom Leaflet marker icon
 │   └── ui/                       # shadcn/ui components
 │       ├── button.tsx
 │       ├── card.tsx
@@ -306,10 +321,13 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 │   │   ├── date.ts              # Date formatting
 │   │   ├── pagination.ts         # Pagination utilities
 │   │   ├── parseSearchParams.ts # URL search params parsing
-│   │   └── sortingParcer.ts     # Sorting utilities
+│   │   ├── sortingParcer.ts     # Sorting utilities
+│   │   └── social.ts            # Social media platform utilities
 │   ├── constants.ts              # Application constants
 │   ├── fonts.ts                  # Font configuration
-│   └── utils.ts                  # General utilities
+│   ├── utils.ts                  # General utilities
+│   ├── geocoding.ts              # Geocoding and reverse geocoding helpers
+│   └── metadata.ts              # Dynamic metadata generation helpers
 ├── providers/                    # React context providers
 │   └── ThemeProvider.tsx
 ├── types/                        # TypeScript type definitions
@@ -333,27 +351,40 @@ Enum values:
 - `House` - House listings
 - `Commercial` - Commercial property listings
 
+### Role
+
+Enum values:
+
+- `ADMIN` - Administrator role
+- `AGENT` - Real estate agent role
+
 ### User
 
 - `id` - Unique identifier
 - `email` - User email (unique)
 - `password` - Hashed password
-- `name` - User name
+- `name` - User name (optional)
+- `role` - User role (ADMIN, AGENT)
+- `isActive` - Account active status (default: true)
+- `lastLogin` - Last login timestamp (optional)
+- `passwordResetToken` - Password reset token (optional)
+- `passwordResetTokenExpiry` - Password reset token expiry (optional)
 - `createdAt` - Account creation timestamp
+- Relations: `properties` (Property\[\])
 
 ### Property
 
 - `id` - Unique identifier
 - `name` - Property name
+- `type` - Property type (Apartment, House, Commercial) (optional)
 - `price` - Property price
-- `area` - Property area in m²
-- `address` - Property address
-- `description` - Property description
-- `image` - Main property image URL
-- `type` - Property type (Apartment, House, Commercial)
-- `promoted` - Featured property flag
-- `latitude` - Geographic latitude
-- `longitude` - Geographic longitude
+- `area` - Property area in m² (optional)
+- `address` - Property address (optional)
+- `lat` - Geographic latitude (optional)
+- `lng` - Geographic longitude (optional)
+- `description` - Property description (optional)
+- `image` - Main property image URL (optional)
+- `promoted` - Featured property flag (default: false)
 - `createdAt` - Listing creation timestamp
 - `ownerId` - Foreign key to User
 - Relations: `owner` (User), `gallery` (PropertyImage\[\])
@@ -383,10 +414,18 @@ Enum values:
 - `id` - Unique identifier
 - `appName` - Application name
 - `appDescription` - Application description
-- `address` - Contact address
+- `address` - Contact address (auto-updated via map reverse geocoding)
 - `phone` - Contact phone number
 - `email` - Contact email address
-- `logo` - Logo URL or path (optional)
+- `logo_dark` - Dark mode logo URL or path (optional, IPFS)
+- `logo_light` - Light mode logo URL or path (optional, IPFS)
+- `lat` - Geographic latitude (optional)
+- `lng` - Geographic longitude (optional)
+- `facebook` - Facebook page URL (optional)
+- `instagram` - Instagram profile URL (optional)
+- `x` - X (Twitter) profile URL (optional)
+- `linkedin` - LinkedIn company page URL (optional)
+- `youtube` - YouTube channel URL (optional)
 - `createdAt` - Settings creation timestamp
 - `updatedAt` - Settings last update timestamp
 - **Note**: Singleton pattern - only one settings record exists
@@ -409,6 +448,13 @@ Example:
 ```
 DATABASE_URL="mysql://user:password@localhost:3306/database_name"
 ```
+
+### Optional
+
+- `NEXT_PUBLIC_SITE_URL` - Public site URL for metadata and email templates (defaults to `https://realestatepro.com`)
+- `PINATA_JWT` - Pinata JWT token for IPFS file uploads (required for logo uploads)
+- `EMAIL_USER` - Email address for sending emails (contact form, password reset)
+- `EMAIL_PASS` - Email password for SMTP authentication
 
 ## Deployment
 
@@ -455,6 +501,9 @@ The application implements a comprehensive filtering system:
 - Next.js Image component for optimized images
 - Lazy loading for non-critical resources
 - Suspense boundaries for code splitting
+- Request-level memoization with React `cache()` for settings queries
+- Dynamic metadata generation for improved SEO
+- Shared map component for backend and frontend (code reuse)
 
 ### Code Organization
 
@@ -463,8 +512,10 @@ The application implements a comprehensive filtering system:
 - Type-safe database operations
 - Consistent error handling patterns
 - Custom hooks for complex state logic (`usePropertyFilters`)
-- Utility functions for parsing and transforming data (`parsePropertySearchParams`)
+- Utility functions for parsing and transforming data (`parsePropertySearchParams`, `reverseGeocode`, `getPlatformName`)
 - Zod schemas for runtime validation
+- Shared components for cross-cutting concerns (MapDisplay, LogoWithSettings)
+- Helper functions for metadata generation and geocoding
 
 ### Settings Management
 
@@ -473,13 +524,31 @@ The application includes a comprehensive settings management system:
 - **Auto-save on Blur**: Each field saves automatically when user leaves the field (onBlur event)
 - **Partial Updates**: Only changed fields are sent to the server, reducing network traffic
 - **Per-field Error Handling**: Validation errors are tracked per field and don't interfere with each other
-- **Form Layout**: Two-column grid layout (left: logo placeholder, app name, description, phone, email; right: address, map placeholder)
+- **Logo Upload**: Separate upload fields for dark and light mode logos with IPFS/Pinata integration
+  - Client-side and server-side file validation (type, size)
+  - File input reset for re-uploading the same file
+  - Confirmation dialog before deletion
+  - Image optimization support
+- **Interactive Map**: Leaflet-based map for location selection
+  - Click on map to set coordinates
+  - Automatic reverse geocoding (coordinates → address)
+  - Address display in map component
+  - Custom marker icon
+  - Geocoding via Nominatim API with English language preference
+- **Social Media Links**: Optional social media profile URLs (Facebook, Instagram, X, LinkedIn, YouTube)
+- **Dynamic Settings**: Settings data used throughout frontend (replaces hardcoded constants)
+  - Dynamic metadata generation for SEO
+  - Dynamic logo display in header/footer
+  - Dynamic contact information in footer and contact page
+  - Dynamic email templates (contact form, password reset)
+- **Form Layout**: Two-column grid layout (left: logo uploaders, app name, description, phone, email, social links; right: interactive map with address display)
 - **Singleton Pattern**: Database ensures only one settings record exists
 - **Type Safety**: Full TypeScript support with `UpdateSettings`, `PartialUpdateSettings`, and `CurrentSettings` types
 - **Validation**: Zod schemas validate both partial (single field) and full (all fields) updates
 - **Server Actions**: Uses Next.js server actions with `useTransition` for loading states
+  - Separate actions for logo upload/removal and location updates
 - **Cache Invalidation**: `revalidatePath` ensures UI updates after successful saves
-- **Pending Features**: Logo uploader and map preview are placeholders for future implementation
+- **Request-level Caching**: `getSettings()` wrapped with React `cache()` for optimal performance
 
 ## License
 
