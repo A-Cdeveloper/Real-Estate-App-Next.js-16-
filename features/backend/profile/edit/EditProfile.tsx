@@ -49,7 +49,7 @@ const EditProfile = ({
   }
 
   return (
-    <Card className="w-[448px] border-primary/50 py-5">
+    <Card className="min-w-full md:min-w-md border-primary/50 py-5">
       <CardHeader className="relative">
         <IconButton
           type="button"
@@ -96,15 +96,11 @@ const EditProfile = ({
               fieldId="email"
             />
           </div>
-          <div className="space-y-2">
-            <label
-              htmlFor="profile-password"
-              className="text-sm font-medium text-muted-foreground"
-            >
-              New Password (leave empty to keep current)
-            </label>
+          <div>
             <PasswordInput
               id="profile-password"
+              label="New Password (leave empty to keep current)"
+              labelClassName="text-sm font-medium text-muted-foreground"
               name="password"
               placeholder="Enter new password"
               disabled={pending}

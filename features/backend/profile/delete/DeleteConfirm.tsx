@@ -41,7 +41,7 @@ const DeleteConfirm = ({
   };
 
   return (
-    <Card className="w-[308px] border-destructive/50 py-5">
+    <Card className="min-w-full md:min-w-[308px] border-destructive/50 py-5">
       <CardHeader className="relative">
         <IconButton
           type="button"
