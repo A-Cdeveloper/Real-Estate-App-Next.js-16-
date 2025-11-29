@@ -5,9 +5,28 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import SidebarToggle from "@/components/backend/layout/sidebar/SidebarToggle";
 import { useSidebarStore } from "@/components/backend/layout/sidebar/sidebarStore";
-import { navigationLinks } from "@/components/backend/layout/sidebar/links";
+import { SidebarLink } from "@/components/backend/layout/sidebar/links";
+import {
+  BellIcon,
+  BookIcon,
+  ListIcon,
+  LayoutDashboardIcon,
+  SettingsIcon,
+  UserIcon,
+  UsersIcon,
+} from "lucide-react";
 
-const Navigation = () => {
+const icons = {
+  LayoutDashboard: LayoutDashboardIcon,
+  List: ListIcon,
+  Bell: BellIcon,
+  Book: BookIcon,
+  Users: UsersIcon,
+  UserIcon: UserIcon,
+  Settings: SettingsIcon,
+};
+
+const Navigation = ({ links }: { links: SidebarLink[] }) => {
   const pathname = usePathname();
   const isCollapsed = useSidebarStore((state) => state.isCollapsed);
 
@@ -23,8 +42,8 @@ const Navigation = () => {
     >
       <SidebarToggle />
 
-      {navigationLinks.map((item) => {
-        const Icon = item.icon;
+      {links.map((item) => {
+        const Icon = icons[item.icon as keyof typeof icons];
         const isActive =
           pathname === item.href || pathname.startsWith(item.href + "/");
 
@@ -43,7 +62,7 @@ const Navigation = () => {
             )}
           >
             <Icon className="size-5" />
-            {/* Text is displayed when not collapsed (mobile and desktop) */}
+
             {!isCollapsed && <span>{item.label}</span>}
           </Link>
         );

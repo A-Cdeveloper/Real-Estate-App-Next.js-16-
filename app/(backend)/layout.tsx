@@ -1,9 +1,9 @@
-import Sidebar from "@/components/backend/layout/sidebar/Sidebar";
 import BackHeader from "@/components/backend/layout/header/BackHeader";
 import MainContent from "@/components/backend/layout/MainContent";
 
 import React from "react";
 import dynamic from "next/dynamic";
+import SidebarWrapper from "@/components/backend/layout/sidebar/SidebarWrapper";
 
 // Lazy load Toaster - only loads when needed (when toast is triggered)
 const Toaster = dynamic(() =>
@@ -14,7 +14,7 @@ const BackendLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <BackHeader />
-      <Sidebar />
+      <SidebarWrapper />
       <MainContent>{children}</MainContent>
       <Toaster />
     </>

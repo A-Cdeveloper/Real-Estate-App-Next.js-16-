@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils";
 import Navigation from "@/components/backend/layout/sidebar/Navigation";
 import SidebarBackdrop from "@/components/backend/layout/sidebar/SidebarBackdrop";
 import { useSidebarStore } from "@/components/backend/layout/sidebar/sidebarStore";
+import { SidebarLink } from "./links";
 
-const Sidebar = () => {
+const Sidebar = ({ links }: { links: SidebarLink[] }) => {
   const isCollapsed = useSidebarStore((state) => state.isCollapsed);
   const setIsCollapsed = useSidebarStore((state) => state.setIsCollapsed);
   const [, startTransition] = useTransition();
@@ -34,7 +35,7 @@ const Sidebar = () => {
           !isCollapsed && "md:bg-secondary bg-secondary/95 backdrop-blur"
         )}
       >
-        <Navigation />
+        <Navigation links={links} />
       </aside>
     </>
   );
