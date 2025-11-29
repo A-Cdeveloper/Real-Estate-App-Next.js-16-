@@ -8,6 +8,7 @@ import { CurrentUser, UpdateUser } from "@/types/user";
 import { hashPassword } from "../auth/password";
 import { updateUserSchema } from "../schemas/user";
 import { formatZodErrors } from "../utils/zod";
+import { ensureAdminAccess } from "../auth/ensureAdminAccess";
 
 export type UserActionState<TData = unknown> =
   | { success: true; user?: CurrentUser }
@@ -25,7 +26,7 @@ export async function updateUser(
   prevState: UserActionState<UpdateUser> | null,
   formData: FormData
 ): Promise<UserActionState<UpdateUser> | null> {
-  // TODO: Add admin authorization check
+  await ensureAdminAccess();
   const userId = formData.get("id") as string;
   if (!userId) {
     return {
@@ -89,6 +90,7 @@ export async function updateUser(
       name: updatedUser.name,
       role: updatedUser.role,
       isActive: updatedUser.isActive,
+      isOnline: updatedUser.isOnline,
       lastLogin: updatedUser.lastLogin,
       createdAt: updatedUser.createdAt,
     };

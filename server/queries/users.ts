@@ -1,14 +1,17 @@
 import prisma from "@/server/prisma";
 import { CurrentUser, UserWithProperties } from "@/types/user";
 import { getPrismaErrorMessage } from "../prisma-errors";
+import { ensureAdminAccess } from "../auth/ensureAdminAccess";
 
 /**
  * Fetches all users with the fields needed for backend profile views, including property counts.
+ * Admin-only query - requires admin access.
  */
 export const getUsers = async (): Promise<{
   users: UserWithProperties[];
   total: number;
 }> => {
+  await ensureAdminAccess();
   try {
     const [users, total] = await Promise.all([
       prisma.user.findMany({

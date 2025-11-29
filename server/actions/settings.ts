@@ -13,12 +13,14 @@ import { SettingsActionState } from "@/types/settings";
 import { pinata } from "../pinata/config";
 import { LOGO_ALLOWED_TYPES, LOGO_MAX_FILE_SIZE } from "@/lib/constants";
 import { reverseGeocode } from "@/lib/geocoding";
+import { ensureAdminAccess } from "../auth/ensureAdminAccess";
 /**
  * App settings update
  */
 export async function updateSettings(
   data: PartialUpdateSettings
 ): Promise<SettingsActionState<CurrentSettings>> {
+  await ensureAdminAccess();
   // Validate partial data
   const partialResult = updateSettingsSchema.safeParse(data);
 
@@ -94,6 +96,7 @@ export const uploadLogo = async (
   file: File,
   type: "dark" | "light"
 ): Promise<string | null> => {
+  await ensureAdminAccess();
   try {
     // Server-side validation
     if (
@@ -147,6 +150,7 @@ export const uploadLogo = async (
  * Server Action: Remove logo
  */
 export const removeLogo = async (type: "dark" | "light") => {
+  await ensureAdminAccess();
   const existingSettings = await prisma.settings.findFirst();
   if (!existingSettings) {
     return {
@@ -177,6 +181,7 @@ export const updateLocation = async (
   lat: number,
   lng: number
 ): Promise<{ success: boolean; error?: string }> => {
+  await ensureAdminAccess();
   try {
     const existingSettings = await prisma.settings.findFirst();
     if (!existingSettings) {

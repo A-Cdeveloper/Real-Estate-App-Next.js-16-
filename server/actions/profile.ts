@@ -83,6 +83,7 @@ export async function updateProfile(
       isActive: updatedUser.isActive,
       lastLogin: updatedUser.lastLogin,
       createdAt: updatedUser.createdAt,
+      isOnline: updatedUser.isOnline,
     };
 
     return { success: true, user: currentUser };
