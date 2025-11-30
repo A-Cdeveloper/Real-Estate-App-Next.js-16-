@@ -33,9 +33,9 @@ const GenericTable = <T,>({
           </tr>
         </thead>
         <tbody>
-          {data.map((item, index) => (
+          {data.map((item) => (
             <tr
-              key={index}
+              key={(item as unknown as { id: string }).id}
               className="border-b hover:bg-muted/50 transition-colors"
             >
               {columns.map((col) => (

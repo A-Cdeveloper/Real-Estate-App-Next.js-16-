@@ -16,16 +16,13 @@ export const getUsers = async (): Promise<{
     const [users, total] = await Promise.all([
       prisma.user.findMany({
         include: {
-          properties: true,
           _count: {
             select: {
               properties: true,
             },
           },
         },
-        orderBy: {
-          role: "asc",
-        },
+        orderBy: [{ role: "asc" }, { isActive: "desc" }],
       }),
       prisma.user.count(),
     ]);

@@ -1,9 +1,8 @@
 "use client";
 
 import GenericTable from "@/components/shared/GenericTable";
-import { Button } from "@/components/ui/button";
 import { UserWithProperties } from "@/types/user";
-import { UserPlus } from "lucide-react";
+import AddNewUser from "./add-edit/AddNewUser";
 import { columns } from "./table/columns";
 
 const AllUsers = ({
@@ -14,19 +13,16 @@ const AllUsers = ({
   total: number;
 }) => {
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between w-full xl:w-3/4">
+    <div className="space-y-4 w-full xl:w-3/4">
+      <div className="flex items-center justify-between">
         <span className="text-sm">Total: {total}</span>
-        <Button>
-          <UserPlus className="size-4 mr-2" />
-          Add New User
-        </Button>
+        <AddNewUser />
       </div>
 
       <GenericTable
         data={users}
         columns={columns}
-        className="w-full xl:w-3/4 text-sm text-muted-foreground"
+        className="text-sm text-muted-foreground w-full"
       />
     </div>
   );

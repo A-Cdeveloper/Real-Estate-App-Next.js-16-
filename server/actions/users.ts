@@ -1,12 +1,17 @@
 "use server";
 
-import { Role } from "@prisma/client";
+import { Role, User } from "@prisma/client";
 import prisma from "@/server/prisma";
 import { getPrismaErrorMessage } from "@/server/prisma-errors";
 import { revalidatePath } from "next/cache";
-import { CurrentUser, UpdateUser } from "@/types/user";
+import { CurrentUser } from "@/types/user";
 import { hashPassword } from "../auth/password";
-import { updateUserSchema } from "../schemas/user";
+import {
+  createUserSchema,
+  updateUserSchema,
+  type CreateUserFormData,
+  type UpdateUserFormData,
+} from "../schemas/user";
 import { formatZodErrors } from "../utils/zod";
 import { ensureAdminAccess } from "../auth/ensureAdminAccess";
 
@@ -20,12 +25,110 @@ export type UserActionState<TData = unknown> =
     };
 
 /**
+ * Helper function to parse user form data from FormData
+ */
+function parseUserFormData(formData: FormData) {
+  return {
+    email: formData.get("email"),
+    name: formData.get("name"),
+    role: formData.get("role"),
+    password: formData.get("password") || undefined,
+    isActive: formData.get("isActive") === "true",
+  };
+}
+
+/**
+ * Helper function to convert User to CurrentUser (removes sensitive fields)
+ */
+function toCurrentUser(user: User): CurrentUser {
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+    isActive: user.isActive,
+    isOnline: user.isOnline,
+    lastLogin: user.lastLogin,
+    createdAt: user.createdAt,
+  };
+}
+
+/**
+ * Server Action: Create a new user
+ */
+export async function createUser(
+  prevState: UserActionState<CreateUserFormData> | null,
+  formData: FormData
+): Promise<UserActionState<CreateUserFormData> | null> {
+  await ensureAdminAccess();
+  const rawData = parseUserFormData(formData);
+  const result = createUserSchema.safeParse(rawData);
+  if (!result.success) {
+    return {
+      success: false,
+      errors: formatZodErrors(result.error),
+      data: {
+        email: rawData.email as string,
+        name: rawData.name as string,
+        role: rawData.role as Role,
+        password: rawData.password as string,
+        isActive: rawData.isActive as boolean,
+      },
+    };
+  }
+  const { email, name, role, password, isActive } = result.data;
+
+  if (await prisma.user.findUnique({ where: { email } })) {
+    return {
+      success: false,
+      errors: {
+        email: ["User with this email already exists."],
+      },
+      data: {
+        email: rawData.email as string,
+        name: rawData.name as string,
+        role: rawData.role as Role,
+        password: rawData.password as string,
+        isActive: rawData.isActive as boolean,
+      },
+    };
+  }
+  try {
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        name,
+        role,
+        password: await hashPassword(password),
+        isActive,
+      },
+    });
+    revalidatePath("/users");
+
+    return { success: true, user: toCurrentUser(newUser) };
+  } catch (error) {
+    console.error("Database error:", error);
+    return {
+      success: false,
+      error: getPrismaErrorMessage(error),
+      data: {
+        email: rawData.email as string,
+        name: rawData.name as string,
+        role: rawData.role as Role,
+        password: rawData.password as string,
+        isActive: rawData.isActive as boolean,
+      },
+    };
+  }
+}
+
+/**
  * Server Action: Update a user (admin - includes role)
  */
 export async function updateUser(
-  prevState: UserActionState<UpdateUser> | null,
+  prevState: UserActionState<UpdateUserFormData & { id: string }> | null,
   formData: FormData
-): Promise<UserActionState<UpdateUser> | null> {
+): Promise<UserActionState<UpdateUserFormData & { id: string }> | null> {
   await ensureAdminAccess();
   const userId = formData.get("id") as string;
   if (!userId) {
@@ -35,12 +138,7 @@ export async function updateUser(
     };
   }
 
-  const rawData = {
-    email: formData.get("email"),
-    name: formData.get("name") || null,
-    role: formData.get("role"),
-    password: formData.get("password") || undefined,
-  };
+  const rawData = parseUserFormData(formData);
 
   const result = updateUserSchema.safeParse(rawData);
 
@@ -50,15 +148,37 @@ export async function updateUser(
       errors: formatZodErrors(result.error),
       data: {
         id: userId,
-        email: String(rawData.email || ""),
-        name: rawData.name ? String(rawData.name) : null,
-        role: String(rawData.role || "AGENT") as UpdateUser["role"],
+        email: rawData.email as string,
+        name: rawData.name as string,
+        role: rawData.role as Role,
         password: undefined,
-      },
+        isActive: rawData.isActive as boolean,
+      } as UpdateUserFormData & { id: string },
     };
   }
 
-  const { email, name, role, password } = result.data;
+  const { email, name, role, password, isActive } = result.data;
+
+  if (
+    await prisma.user.findFirst({
+      where: { email, id: { not: userId } },
+    })
+  ) {
+    return {
+      success: false,
+      errors: {
+        email: ["User with this email already exists."],
+      },
+      data: {
+        id: userId,
+        email: rawData.email as string,
+        name: rawData.name as string,
+        role: rawData.role as Role,
+        password: rawData.password as string,
+        isActive: rawData.isActive as boolean,
+      },
+    };
+  }
 
   try {
     const updateData: {
@@ -66,10 +186,12 @@ export async function updateUser(
       name: string | null;
       role: Role;
       password?: string;
+      isActive: boolean;
     } = {
       email,
       name,
       role,
+      isActive,
     };
 
     if (password) {
@@ -83,19 +205,7 @@ export async function updateUser(
 
     revalidatePath("/users");
 
-    // Remove sensitive fields
-    const currentUser: CurrentUser = {
-      id: updatedUser.id,
-      email: updatedUser.email,
-      name: updatedUser.name,
-      role: updatedUser.role,
-      isActive: updatedUser.isActive,
-      isOnline: updatedUser.isOnline,
-      lastLogin: updatedUser.lastLogin,
-      createdAt: updatedUser.createdAt,
-    };
-
-    return { success: true, user: currentUser };
+    return { success: true, user: toCurrentUser(updatedUser) };
   } catch (error) {
     console.error("Database error:", error);
     return {
@@ -107,7 +217,28 @@ export async function updateUser(
         name,
         role,
         password: undefined,
+        isActive,
       },
+    };
+  }
+}
+
+/**
+ * Server Action: Delete a user
+ */
+export async function deleteUser(id: string) {
+  await ensureAdminAccess();
+  try {
+    await prisma.user.delete({
+      where: { id },
+    });
+    revalidatePath("/users");
+    return { success: true };
+  } catch (error) {
+    console.error("Database error:", error);
+    return {
+      success: false,
+      error: getPrismaErrorMessage(error),
     };
   }
 }

@@ -2,7 +2,7 @@ import Modal from "@/components/shared/Modal";
 import { Button } from "@/components/ui/button";
 import { UserPlus } from "lucide-react";
 import { useState } from "react";
-import NewUserForm from "./NewUserForm";
+import UserForm from "./UserForm";
 
 const AddNewUser = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +18,7 @@ const AddNewUser = () => {
         showCloseButton={false}
         disableClose={false}
       >
-        <NewUserForm onClose={() => setIsOpen(false)} />
+        <UserForm onClose={() => setIsOpen(false)} mode="create" />
       </Modal>
     </>
   );

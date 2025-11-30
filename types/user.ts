@@ -1,4 +1,4 @@
-import { Property, User } from "@prisma/client";
+import { User } from "@prisma/client";
 
 // User types
 export type LoginUser = Pick<User, "id" | "email" | "role">;
@@ -11,7 +11,6 @@ export type CurrentUser = Omit<
 
 /* backend users list page user type */
 export type UserWithProperties = CurrentUser & {
-  properties: Property[];
   propertyCount: number;
 };
 

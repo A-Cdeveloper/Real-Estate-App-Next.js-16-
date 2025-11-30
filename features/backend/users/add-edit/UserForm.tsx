@@ -1,0 +1,202 @@
+"use client";
+
+import PasswordInput from "@/components/auth/PasswordInput";
+import CustomInput from "@/components/shared/CustomInput";
+import CustomSelect from "@/components/shared/CustomSelect";
+import CustumSwitch from "@/components/shared/CustumSwitch";
+import ErrorFormMessages from "@/components/shared/ErrorFormMessages";
+import IconButton from "@/components/shared/IconButton";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { USER_ROLE_OPTIONS } from "@/lib/constants";
+import { createUser, updateUser } from "@/server/actions/users";
+import { CurrentUser } from "@/types/user";
+import { Loader2, X } from "lucide-react";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
+
+/**
+ * UserForm component
+ * Displays a form for creating or updating a user
+ * @param onClose - Callback function to close the form
+ * @param mode - The mode of the form ("create" or "edit")
+ * @param initialData - The initial data for the form (only used for edit mode)
+ */
+
+type UserFormMode = "create" | "edit";
+type UserFormProps = {
+  onClose: () => void;
+  mode: UserFormMode;
+  initialData?: CurrentUser;
+};
+
+const UserForm = ({ onClose, mode, initialData }: UserFormProps) => {
+  const [createState, createAction, createPending] = useActionState(
+    createUser,
+    null
+  );
+  const [updateState, updateAction, updatePending] = useActionState(
+    updateUser,
+    null
+  );
+
+  const state = mode === "create" ? createState : updateState;
+  const formAction = mode === "create" ? createAction : updateAction;
+  const pending = mode === "create" ? createPending : updatePending;
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success(
+        mode === "create"
+          ? "User created successfully!"
+          : "User updated successfully!"
+      );
+      onClose();
+    }
+  }, [state, onClose, mode]);
+
+  return (
+    <Card className="min-w-full md:min-w-md border-primary/50 py-5">
+      <CardHeader className="relative">
+        <IconButton
+          type="button"
+          variant="ghost"
+          icon={X}
+          label="Close form"
+          className="absolute right-2 -top-4 h-6 w-6 [&>span]:hidden"
+          onClick={onClose}
+        />
+        <CardTitle className="text-lg">
+          {mode === "create" ? "Add New User" : "Edit Existing User"}
+        </CardTitle>
+        <CardDescription className="text-sm text-muted-foreground">
+          {mode === "create"
+            ? "Create a new user account here."
+            : "Edit an existing user account here."}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form action={formAction} className="space-y-5">
+          {mode === "edit" && initialData && (
+            <div>
+              <input type="hidden" name="id" value={initialData?.id} />
+            </div>
+          )}
+          <div>
+            <CustomInput
+              id="new-user-name"
+              label="Name"
+              placeholder="Enter name"
+              labelClassName="text-sm font-medium text-muted-foreground"
+              name="name"
+              defaultValue={
+                state && !state.success
+                  ? state.data?.name
+                  : initialData?.name || ""
+              }
+              disabled={pending}
+            />
+            <ErrorFormMessages state={state} fieldName="name" fieldId="name" />
+          </div>
+          <div>
+            <CustomInput
+              id="new-user-email"
+              type="email"
+              label="Email Address"
+              placeholder="name@example.com"
+              labelClassName="text-sm font-medium text-muted-foreground"
+              name="email"
+              defaultValue={
+                state && !state.success
+                  ? state.data?.email
+                  : initialData?.email || ""
+              }
+              disabled={pending}
+            />
+            <ErrorFormMessages
+              state={state}
+              fieldName="email"
+              fieldId="email"
+            />
+          </div>
+          <div>
+            <CustomSelect
+              id="new-user-role"
+              label="Role"
+              options={USER_ROLE_OPTIONS}
+              placeholder="Select a role"
+              labelClassName="text-sm font-medium text-muted-foreground"
+              name="role"
+              defaultValue={
+                state && !state.success
+                  ? state.data?.role
+                  : initialData?.role || USER_ROLE_OPTIONS[1].value
+              }
+              disabled={pending}
+            />
+          </div>
+          <div>
+            <PasswordInput
+              id="new-user-password"
+              label={
+                mode === "edit"
+                  ? "New Password (leave empty to keep current)"
+                  : "Password"
+              }
+              labelClassName="text-sm font-medium text-muted-foreground"
+              name="password"
+              placeholder="Enter password"
+              defaultValue={state && !state.success ? state.data?.password : ""}
+              disabled={pending}
+            />
+            <ErrorFormMessages
+              state={state}
+              fieldName="password"
+              fieldId="password"
+            />
+          </div>
+          <div>
+            <CustumSwitch
+              id="new-user-active"
+              name="isActive"
+              defaultChecked={
+                mode === "edit" ? (initialData?.isActive ?? false) : false
+              }
+              labels={[
+                { label: "Inactive", checked: false },
+                { label: "Active", checked: true },
+              ]}
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <Button type="submit" disabled={pending}>
+              {pending ? (
+                <>
+                  <Loader2 className="animate-spin" aria-hidden="true" />
+                  <span aria-live="polite">
+                    {mode === "create"
+                      ? "Creating user..."
+                      : "Updating user..."}
+                  </span>
+                </>
+              ) : mode === "create" ? (
+                "Create User"
+              ) : (
+                "Update User"
+              )}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default UserForm;

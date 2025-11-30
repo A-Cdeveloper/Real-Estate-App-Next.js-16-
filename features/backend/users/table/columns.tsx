@@ -90,16 +90,6 @@ export const columns: Column<UserWithProperties>[] = [
   {
     key: "edit/delete",
     label: "",
-    render: (user) => (
-      <ActionsCell
-        user={user}
-        onEdit={() => {
-          console.log("Edit user", user);
-        }}
-        onDelete={() => {
-          console.log("Delete user", user);
-        }}
-      />
-    ),
+    render: (user) => <ActionsCell key={user.id} user={user} />,
   },
 ];
