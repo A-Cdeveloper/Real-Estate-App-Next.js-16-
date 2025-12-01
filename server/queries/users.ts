@@ -10,9 +10,11 @@ import { ensureAdminAccess } from "../auth/ensureAdminAccess";
 export const getUsers = async ({
   page = 1,
   limit = 10,
+  sort = "role_asc",
 }: {
   page?: number;
   limit?: number;
+  sort?: string;
 }): Promise<{
   users: UserWithProperties[];
   total: number;
@@ -21,9 +23,19 @@ export const getUsers = async ({
   totalPages: number;
 }> => {
   await ensureAdminAccess();
+  const [field, order] = sort.split("_");
+
+  const orderBy =
+    field === "propertyCount"
+      ? { properties: { _count: order as "asc" | "desc" } }
+      : { [field]: order as "asc" | "desc" };
+
   try {
     const [users, total] = await Promise.all([
       prisma.user.findMany({
+        orderBy: [orderBy],
+        skip: (page - 1) * limit,
+        take: limit,
         include: {
           _count: {
             select: {
@@ -31,9 +43,6 @@ export const getUsers = async ({
             },
           },
         },
-        orderBy: [{ role: "asc" }, { isActive: "desc" }],
-        skip: (page - 1) * limit,
-        take: limit,
       }),
       prisma.user.count(),
     ]);

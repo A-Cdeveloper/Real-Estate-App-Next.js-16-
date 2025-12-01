@@ -66,7 +66,7 @@ export const getColumns = (
     },
   },
   {
-    key: "status",
+    key: "isActive",
     label: "Status",
     render: (user) => (
       <span className="text-sm font-medium">

@@ -13,6 +13,7 @@ const UsersPage = async ({ searchParams }: { searchParams: SearchParams }) => {
   const params = await searchParams;
   const { users, total, page, totalPages } = await getUsers({
     page: Number(params.page) || 1,
+    sort: (params.sort as string) || "role_asc",
   });
   const currentUser = await getCurrentUserFromSession();
   return (
@@ -24,6 +25,7 @@ const UsersPage = async ({ searchParams }: { searchParams: SearchParams }) => {
         currentUserId={currentUser?.id as string}
         totalPages={totalPages}
         page={+page}
+        sort={(params.sort as string) || "role_asc"}
       />
     </div>
   );
