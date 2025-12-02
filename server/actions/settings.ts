@@ -10,10 +10,10 @@ import {
 import { formatZodErrors } from "../utils/zod";
 import { revalidatePath } from "next/cache";
 import { SettingsActionState } from "@/types/settings";
-import { pinata } from "../pinata/config";
 import { LOGO_ALLOWED_TYPES, LOGO_MAX_FILE_SIZE } from "@/lib/constants";
 import { reverseGeocode } from "@/lib/geocoding";
 import { ensureAdminAccess } from "../auth/ensureAdminAccess";
+import { uploadImagePinata } from "./uploadImagePinata";
 /**
  * App settings update
  * @param data - The data to update the settings with
@@ -97,58 +97,39 @@ export async function updateSettings(
  * @param type - The type of logo to upload
  * @returns The URL of the uploaded logo
  */
+/**
+ * Upload a logo image and update settings
+ * @param file - The file to upload
+ * @param type - The type of logo ("dark" or "light")
+ * @returns The URL of the uploaded image, or null if upload failed
+ */
 export const uploadLogo = async (
   file: File,
   type: "dark" | "light"
 ): Promise<string | null> => {
-  await ensureAdminAccess();
-  try {
-    // Server-side validation
-    if (
-      !LOGO_ALLOWED_TYPES.includes(
-        file.type as (typeof LOGO_ALLOWED_TYPES)[number]
-      )
-    ) {
-      console.error("Invalid file type:", file.type);
-      return null;
-    }
+  // Upload the image using the shared upload function
+  const url = await uploadImagePinata(
+    file,
+    LOGO_ALLOWED_TYPES,
+    LOGO_MAX_FILE_SIZE,
+    process.env.PINATA_LOGO_GROUP_ID || ""
+  );
 
-    if (file.size > LOGO_MAX_FILE_SIZE) {
-      console.error("File size too large:", file.size);
-      return null;
-    }
-
-    // First, upload the file to IPFS
-    const uploadResult = await pinata.upload.public.file(file);
-    const cid = uploadResult.cid;
-
-    // Get file ID from upload result (if available) or use CID
-    const fileId = uploadResult.id || cid;
-
-    // Add file to group
-    await pinata.groups.public.addFiles({
-      groupId: "a4469711-f453-4073-a7d9-aa429a5d2601",
-      files: [fileId],
-    });
-
-    // Convert CID to URL using gateway
-    const url = await pinata.gateways.public.convert(cid);
-
-    // Update settings with logo URL for the specified type
-    const existingSettings = await prisma.settings.findFirst();
-    if (existingSettings) {
-      await prisma.settings.update({
-        where: { id: existingSettings.id },
-        data: type === "dark" ? { logo_dark: url } : { logo_light: url },
-      });
-      revalidatePath("/settings");
-    }
-
-    return url;
-  } catch (error) {
-    console.error("Error uploading logo:", error);
+  if (!url) {
     return null;
   }
+
+  // Update settings with logo URL for the specified type
+  const existingSettings = await prisma.settings.findFirst();
+  if (existingSettings) {
+    await prisma.settings.update({
+      where: { id: existingSettings.id },
+      data: type === "dark" ? { logo_dark: url } : { logo_light: url },
+    });
+    revalidatePath("/settings");
+  }
+
+  return url;
 };
 
 /**
