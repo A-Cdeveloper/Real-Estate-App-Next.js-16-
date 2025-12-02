@@ -9,6 +9,8 @@ import { parsePropertySort } from "@/lib/utils/sortingParcer";
 
 /**
  * Get latest properties
+ * @param take - The number of properties to return
+ * @returns The latest properties
  */
 export async function getLatestProperties(
   take: number = LATEST_PROPERTIES_COUNT
@@ -27,6 +29,8 @@ export async function getLatestProperties(
 
 /**
  * Get promoted properties (where promoted: true, sorted by createdAt desc)
+ * @param take - The number of properties to return
+ * @returns The promoted properties
  */
 export async function getPromotedProperties(
   take: number = PROMOTED_PROPERTIES_COUNT
@@ -46,6 +50,11 @@ export async function getPromotedProperties(
 
 /**
  * Get all properties with pagination and filters
+ * @param take - The number of properties to return
+ * @param skip - The number of properties to skip
+ * @param filters - The filters to apply
+ * @param sort - The sorting order
+ * @returns The properties
  */
 
 export async function getAllProperties(
@@ -98,6 +107,8 @@ export async function getAllProperties(
 /**
  * Get recent property IDs (for static generation - limited)
  * Only generates static pages for the most recent properties
+ * @param limit - The number of properties to return
+ * @returns The IDs of the recent properties
  */
 export async function getRecentPropertyIds(limit: number = 50) {
   try {
@@ -115,6 +126,8 @@ export async function getRecentPropertyIds(limit: number = 50) {
 
 /**
  * Get property by ID
+ * @param id - The ID of the property
+ * @returns The property
  */
 export async function getPropertyById(id: string) {
   try {
@@ -148,6 +161,7 @@ export async function getPropertyById(id: string) {
 /**
  * Get property statistics
  * Returns: total listings, average price per m², and count added in last week
+ * @returns The property statistics
  */
 export async function getPropertyStats() {
   try {

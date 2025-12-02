@@ -16,6 +16,8 @@ import { reverseGeocode } from "@/lib/geocoding";
 import { ensureAdminAccess } from "../auth/ensureAdminAccess";
 /**
  * App settings update
+ * @param data - The data to update the settings with
+ * @returns The result of the update
  */
 export async function updateSettings(
   data: PartialUpdateSettings
@@ -91,6 +93,9 @@ export async function updateSettings(
 
 /**
  * Upload logo
+ * @param file - The file to upload
+ * @param type - The type of logo to upload
+ * @returns The URL of the uploaded logo
  */
 export const uploadLogo = async (
   file: File,
@@ -148,6 +153,8 @@ export const uploadLogo = async (
 
 /**
  * Server Action: Remove logo
+ * @param type - The type of logo to remove
+ * @returns The result of the removal
  */
 export const removeLogo = async (type: "dark" | "light") => {
   await ensureAdminAccess();
@@ -176,6 +183,9 @@ export const removeLogo = async (type: "dark" | "light") => {
 
 /**
  * Server Action: Update location
+ * @param lat - The latitude to update
+ * @param lng - The longitude to update
+ * @returns The result of the update
  */
 export const updateLocation = async (
   lat: number,

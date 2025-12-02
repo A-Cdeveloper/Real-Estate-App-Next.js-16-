@@ -14,6 +14,9 @@ import { formatZodErrors } from "../utils/zod";
 
 /**
  * Server Action: Update user profile (no role change)
+ * @param prevState - The previous state of the profile
+ * @param formData - The form data containing the profile information
+ * @returns The result of the update
  */
 export async function updateProfile(
   prevState: ProfileActionState<UpdateProfile> | null,
@@ -104,10 +107,8 @@ export async function updateProfile(
 
 /**
  * Server Action: Delete user profile
+ * @returns The result of the deletion
  */
-
-//
-
 export async function deleteProfile() {
   const session = await getSession();
   const userId = session?.userId;

@@ -21,6 +21,9 @@ import type {
 
 /**
  * Server Action: Login user
+ * @param prevState - The previous state of the login
+ * @param formData - The form data containing the login information
+ * @returns The result of the login
  */
 
 export async function loginAction(
@@ -130,6 +133,8 @@ export async function loginAction(
 
 /**
  * Server Action: Logout user
+ * @param userId - The ID of the user to logout
+ * @returns The result of the logout
  */
 export async function logout(userId: string): Promise<{ success: true }> {
   await prisma.user.update({
@@ -143,6 +148,9 @@ export async function logout(userId: string): Promise<{ success: true }> {
 /**
  * Server Action: Request password reset
  * Generates reset token and sends email with reset link
+ * @param prevState - The previous state of the forgot password
+ * @param formData - The form data containing the forgot password information
+ * @returns The result of the forgot password
  */
 export async function forgotPasswordAction(
   prevState: ForgotPasswordResponse | null,
@@ -228,6 +236,9 @@ export async function forgotPasswordAction(
 /**
  * Server Action: Reset password
  * Validates token, checks expiry, and updates password
+ * @param prevState - The previous state of the reset password
+ * @param formData - The form data containing the reset password information
+ * @returns The result of the reset password
  */
 export async function resetPasswordAction(
   prevState: ResetPasswordResponse | null,

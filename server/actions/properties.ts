@@ -6,6 +6,8 @@ import { revalidatePath } from "next/cache";
 
 /**
  * Server Action: Create a new property
+ * @param data - The data to create the property with
+ * @returns The result of the creation
  */
 export async function createProperty(data: {
   name: string;
@@ -35,6 +37,9 @@ export async function createProperty(data: {
 
 /**
  * Server Action: Update a property
+ * @param id - The ID of the property
+ * @param data - The data to update the property with
+ * @returns The result of the update
  */
 export async function updateProperty(
   id: string,
@@ -68,6 +73,8 @@ export async function updateProperty(
 
 /**
  * Server Action: Delete a property
+ * @param id - The ID of the property
+ * @returns The result of the deletion
  */
 export async function deleteProperty(id: string) {
   try {

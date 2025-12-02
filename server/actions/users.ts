@@ -26,6 +26,8 @@ export type UserActionState<TData = unknown> =
 
 /**
  * Helper function to parse user form data from FormData
+ * @param formData - The form data containing the user information
+ * @returns The parsed user data
  */
 function parseUserFormData(formData: FormData) {
   return {
@@ -39,6 +41,8 @@ function parseUserFormData(formData: FormData) {
 
 /**
  * Helper function to convert User to CurrentUser (removes sensitive fields)
+ * @param user - The user to convert
+ * @returns The current user
  */
 function toCurrentUser(user: User): CurrentUser {
   return {
@@ -55,6 +59,9 @@ function toCurrentUser(user: User): CurrentUser {
 
 /**
  * Server Action: Create a new user
+ * @param prevState - The previous state of the user
+ * @param formData - The form data containing the user information
+ * @returns The result of the creation
  */
 export async function createUser(
   prevState: UserActionState<CreateUserFormData> | null,
@@ -124,6 +131,9 @@ export async function createUser(
 
 /**
  * Server Action: Update a user (admin - includes role)
+ * @param prevState - The previous state of the user
+ * @param formData - The form data containing the user information
+ * @returns The result of the update
  */
 export async function updateUser(
   prevState: UserActionState<UpdateUserFormData & { id: string }> | null,
@@ -225,6 +235,8 @@ export async function updateUser(
 
 /**
  * Server Action: Delete a user
+ * @param id - The ID of the user
+ * @returns The result of the deletion
  */
 export async function deleteUser(id: string) {
   await ensureAdminAccess();

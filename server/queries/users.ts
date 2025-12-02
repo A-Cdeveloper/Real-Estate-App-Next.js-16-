@@ -6,6 +6,10 @@ import { ensureAdminAccess } from "../auth/ensureAdminAccess";
 /**
  * Fetches all users with the fields needed for backend profile views, including property counts.
  * Admin-only query - requires admin access.
+ * @param page - The page number
+ * @param limit - The number of users per page
+ * @param sort - The sorting order
+ * @returns The users
  */
 export const getUsers = async ({
   page = 1,
@@ -64,6 +68,9 @@ export const getUsers = async ({
 };
 /**
  * Fetches a user profile by id with the fields needed for backend profile views.
+ *
+ * @param userId - The ID of the user
+ * @returns The user
  */
 export async function getUserById(userId: string): Promise<CurrentUser | null> {
   return prisma.user.findUnique({
