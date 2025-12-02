@@ -1,15 +1,14 @@
-import type { Metadata } from "next";
-import { News } from "@prisma/client";
-import { SITE_URL, NEWS_PER_PAGE } from "@/lib/constants";
+import NewsGridSkeleton from "@/components/frontend/skeletons/NewsGridSkeleton";
+import PaginationControls from "@/components/shared/PaginationControls";
+import { Typography } from "@/components/ui/typography";
 import EmptyState from "@/features/frontend/EmptyState";
 import NewsGridtem from "@/features/frontend/news/NewsGridtem";
-import { Typography } from "@/components/ui/typography";
-import { getAllNews } from "@/server/queries/news";
-import PaginationControls from "@/components/shared/PaginationControls";
-import { calculateSkip, getPaginationData } from "@/lib/utils/pagination";
-import { Suspense } from "react";
-import NewsGridSkeleton from "@/components/frontend/skeletons/NewsGridSkeleton";
+import { NEWS_PER_PAGE, SITE_URL } from "@/lib/constants";
 import { generatePageMetadata } from "@/lib/metadata";
+import { getAllNews } from "@/server/queries/news";
+import { News } from "@prisma/client";
+import type { Metadata } from "next";
+import { Suspense } from "react";
 
 export async function generateMetadata(): Promise<Metadata> {
   return await generatePageMetadata(
@@ -50,14 +49,14 @@ export default AllNewsPage;
  * @returns NewsList component
  */
 const NewsList = async ({ page }: { page: number }) => {
-  const skip = calculateSkip(page, NEWS_PER_PAGE);
-  const { news, total } = await getAllNews(NEWS_PER_PAGE, skip);
-
-  const { start, end, currentPage, totalPages } = getPaginationData(
+  const { news, total, totalPages } = await getAllNews({
     page,
-    NEWS_PER_PAGE,
-    total
-  );
+    limit: NEWS_PER_PAGE,
+    sort: "createdAt_desc",
+  });
+
+  const start = (page - 1) * NEWS_PER_PAGE + 1;
+  const end = Math.min(start + NEWS_PER_PAGE - 1, total);
 
   if (news.length === 0) {
     return (
@@ -81,7 +80,7 @@ const NewsList = async ({ page }: { page: number }) => {
         ))}
       </div>
       <PaginationControls
-        currentPage={currentPage}
+        currentPage={page}
         totalPages={totalPages}
         baseUrl="/news"
       />

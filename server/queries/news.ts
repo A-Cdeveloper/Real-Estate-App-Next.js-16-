@@ -1,8 +1,12 @@
 import prisma from "@/server/prisma";
 import { getPrismaErrorMessage } from "@/server/prisma-errors";
+import { News } from "@prisma/client";
+import { NEWS_PER_PAGE } from "@/lib/constants";
 
 /**
  * Get latest news
+ * @param take - The number of news to return
+ * @returns The latest news
  */
 export async function getLatestNews(take: number = 5) {
   try {
@@ -16,17 +20,41 @@ export async function getLatestNews(take: number = 5) {
     throw new Error(getPrismaErrorMessage(error));
   }
 }
-
 /**
- * Get all news with pagination
+ *
+ * @param page - The page number
+ * @param limit - The number of news per page
+ * @param sort - The sorting order
+ * @returns
  */
-export async function getAllNews(take: number = 12, skip: number = 0) {
+export async function getAllNews({
+  page = 1,
+  limit = NEWS_PER_PAGE,
+  sort = "createdAt_desc", // default sorting
+}: {
+  page?: number;
+  limit?: number;
+  sort?: string;
+}): Promise<{
+  news: News[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}> {
   try {
+    const [field, order] = sort.split("_");
+    let orderBy: { [key: string]: "asc" | "desc" } = { createdAt: "desc" };
+
+    if (field) {
+      orderBy = { [field]: order as "asc" | "desc" };
+    }
+
     const [news, total] = await Promise.all([
       prisma.news.findMany({
-        take,
-        skip,
-        orderBy: { createdAt: "desc" },
+        orderBy,
+        skip: (page - 1) * limit,
+        take: limit,
       }),
       prisma.news.count(),
     ]);
@@ -34,7 +62,9 @@ export async function getAllNews(take: number = 12, skip: number = 0) {
     return {
       news,
       total,
-      hasMore: skip + take < total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
     };
   } catch (error) {
     console.error("Database error:", error);
@@ -43,7 +73,8 @@ export async function getAllNews(take: number = 12, skip: number = 0) {
 }
 
 /**
- * Get all news IDs (for static generation)
+ * Get all news IDs
+ * @returns The IDs of all news
  */
 export async function getAllNewsIds() {
   try {
@@ -61,6 +92,8 @@ export async function getAllNewsIds() {
 /**
  * Get recent news IDs (for static generation - limited)
  * Only generates static pages for the most recent news items
+ * @param limit - The number of news to return
+ * @returns The IDs of the recent news
  */
 export async function getRecentNewsIds(limit: number = 30) {
   try {
@@ -78,6 +111,8 @@ export async function getRecentNewsIds(limit: number = 30) {
 
 /**
  * Get news by ID
+ * @param id - The ID of the news
+ * @returns The news item
  */
 export async function getNewsById(id: string) {
   try {
