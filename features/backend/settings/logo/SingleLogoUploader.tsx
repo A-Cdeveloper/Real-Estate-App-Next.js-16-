@@ -7,6 +7,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { uploadLogo, removeLogo } from "@/server/actions/settings";
 import { LOGO_ALLOWED_TYPES, LOGO_MAX_FILE_SIZE } from "@/lib/constants";
+import { validateFile } from "@/lib/utils/file";
 
 type LogoType = "dark" | "light";
 
@@ -21,21 +22,6 @@ const getTypeLabel = (type: LogoType, capitalize = true): string => {
   return capitalize ? label.charAt(0).toUpperCase() + label.slice(1) : label;
 };
 
-// File validation function
-const validateFile = (file: File): string | null => {
-  if (
-    !LOGO_ALLOWED_TYPES.includes(
-      file.type as (typeof LOGO_ALLOWED_TYPES)[number]
-    )
-  ) {
-    return "Only PNG, JPEG, JPG, SVG, and WebP images are allowed";
-  }
-  if (file.size > LOGO_MAX_FILE_SIZE) {
-    return "File size must be less than 5MB";
-  }
-  return null;
-};
-
 const SingleLogoUploader = ({ type, logo }: SingleLogoUploaderProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -46,7 +32,11 @@ const SingleLogoUploader = ({ type, logo }: SingleLogoUploaderProps) => {
     if (!file) return;
 
     // Validate file
-    const validationError = validateFile(file);
+    const validationError = validateFile(
+      file,
+      LOGO_ALLOWED_TYPES,
+      LOGO_MAX_FILE_SIZE
+    );
     if (validationError) {
       toast.error(validationError);
       // Reset input
