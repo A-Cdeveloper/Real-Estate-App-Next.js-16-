@@ -1,5 +1,8 @@
+// app/(auth)/layout.tsx
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
+import { getSettings } from "@/server/queries/settings";
+import Logo from "@/components/shared/Logo";
 
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { generateBaseMetadata } from "@/lib/metadata";
@@ -17,11 +20,23 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function AuthRootLayout({
+export default async function AuthRootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSettings();
+
+  const logoLight =
+    settings?.logo_light && settings.logo_light.trim() !== ""
+      ? settings.logo_light
+      : "/real-estate-logo.png";
+  const logoDark =
+    settings?.logo_dark && settings.logo_dark.trim() !== ""
+      ? settings.logo_dark
+      : "/real-estate-logo_light.png";
+  const appName = settings?.appName || "Real Estate";
+
   return (
     <>
       {/* Skip to main content link for screen readers */}
@@ -34,8 +49,23 @@ export default function AuthRootLayout({
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
-      <main id="main-content" className="min-h-screen" role="main">
-        {children}
+      <main
+        id="main-content"
+        className="min-h-screen grid place-items-center px-4 py-8"
+        role="main"
+      >
+        <div className="w-full max-w-[350px] space-y-8">
+          <div className="flex justify-center">
+            <Logo
+              width={130}
+              height={130}
+              appName={appName}
+              logoLight={logoLight}
+              logoDark={logoDark}
+            />
+          </div>
+          {children}
+        </div>
       </main>
 
       <Toaster />

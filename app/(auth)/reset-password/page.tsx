@@ -22,7 +22,7 @@ const ResetPassword = async ({
   }
 
   return (
-    <section className="flex justify-center items-center h-screen">
+    <section className="flex justify-center items-center">
       <Suspense fallback={<div>Loading...</div>}>
         <ResetPasswordForm />
       </Suspense>
