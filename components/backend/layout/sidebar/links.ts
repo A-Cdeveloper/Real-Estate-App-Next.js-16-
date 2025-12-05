@@ -14,7 +14,7 @@ export const navigationLinks: SidebarLink[] = [
   },
   {
     label: "Proprietes",
-    href: "/proprietes-area",
+    href: "/proprietes-area?sort=status_desc",
     icon: "List",
     adminOnly: false,
   },
@@ -24,8 +24,18 @@ export const navigationLinks: SidebarLink[] = [
     icon: "Bell",
     adminOnly: true,
   },
-  { label: "News", href: "/news-editor", icon: "Book", adminOnly: true },
-  { label: "Users", href: "/users", icon: "Users", adminOnly: true },
+  {
+    label: "News",
+    href: "/news-editor?sort=createdAt_desc",
+    icon: "Book",
+    adminOnly: true,
+  },
+  {
+    label: "Users",
+    href: "/users?sort=role_asc",
+    icon: "Users",
+    adminOnly: true,
+  },
   { label: "Profile", href: "/profile", icon: "UserIcon", adminOnly: false },
   { label: "Settings", href: "/settings", icon: "Settings", adminOnly: true },
 ];

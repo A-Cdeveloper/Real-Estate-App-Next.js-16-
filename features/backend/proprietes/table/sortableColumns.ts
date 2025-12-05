@@ -1,1 +1,1 @@
-export const sortableColumns = ["name", "price", "createdAt"];
+export const sortableColumns = ["name", "price", "createdAt", "status"];

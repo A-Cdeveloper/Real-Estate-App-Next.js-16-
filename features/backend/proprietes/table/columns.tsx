@@ -4,6 +4,7 @@ import { formatLongDate } from "@/lib/utils/date";
 
 import { DEFAULT_NEWS_IMAGE } from "@/lib/constants";
 import { PropertyWithOwner } from "@/types/properties";
+import ActionsCell from "./ActionsCell";
 
 /**
  * Columns for the news table
@@ -18,7 +19,7 @@ export const getColumns = (): Column<PropertyWithOwner>[] => [
         <CustumImage
           src={property.image || DEFAULT_NEWS_IMAGE}
           alt={property.name}
-          className="w-20 h-20 rounded-none"
+          className="w-17 h-17 rounded-none"
         />
       );
     },
@@ -67,6 +68,6 @@ export const getColumns = (): Column<PropertyWithOwner>[] => [
   {
     key: "edit/delete",
     label: "",
-    render: (property) => <span>Edit/Delete</span>,
+    render: (property) => <ActionsCell property={property} />,
   },
 ];
