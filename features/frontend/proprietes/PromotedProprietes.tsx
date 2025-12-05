@@ -12,10 +12,9 @@ const PromotedProprietes = async () => {
 
   if (promotedProperties.length === 0) {
     return (
-      <EmptyState
-        title="No promoted properties found"
-        message="There are no promoted properties available at this time."
-      />
+      <div className="lg:col-span-2">
+        <EmptyState title="No promoted properties found" />
+      </div>
     );
   }
 

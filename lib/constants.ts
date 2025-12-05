@@ -15,6 +15,7 @@ export const NEWS_PER_PAGE = 8;
 export const LATEST_NEWS_COUNT = 5;
 export const LATEST_PROPERTIES_COUNT = 9;
 export const PROMOTED_PROPERTIES_COUNT = 9;
+export const CAROUSEL_MIN_ITEMS_COUNT = 3;
 
 export const NAVIGATION_LINKS = [
   { href: "/", label: "Home" },

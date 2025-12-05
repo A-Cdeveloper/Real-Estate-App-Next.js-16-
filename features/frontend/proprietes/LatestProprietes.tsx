@@ -10,10 +10,9 @@ const LatestProprietes = async () => {
 
   if (latestProperties.length === 0) {
     return (
-      <EmptyState
-        title="No latest properties found"
-        message="There are no latest properties available at this time."
-      />
+      <div className="lg:col-span-2">
+        <EmptyState title="No latest properties found" />
+      </div>
     );
   }
 

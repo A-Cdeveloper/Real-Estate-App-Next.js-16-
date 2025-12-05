@@ -40,10 +40,7 @@ const ProprietesList = async ({
 
   if (properties.length === 0) {
     return (
-      <EmptyState
-        title="No properties found"
-        message="There are no properties available at this time."
-      />
+      <EmptyState title="There are no properties available at this time." />
     );
   }
 

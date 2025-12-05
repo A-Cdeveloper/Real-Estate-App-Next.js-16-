@@ -9,15 +9,22 @@ type EmptyStateProps = {
 
 const EmptyState = ({
   title = "No items found",
-  message = "There are no items to display at this time.",
+  message,
   variant = "default",
 }: EmptyStateProps) => {
   return (
-    <Alert variant={variant} className="max-w-md mx-auto mt-12">
-      <Info className="h-4 w-4" />
-      <AlertTitle>{title}</AlertTitle>
-      <AlertDescription>{message}</AlertDescription>
-    </Alert>
+    <div className="flex justify-center items-center h-full">
+      <Alert
+        variant={variant}
+        className="max-w-lg mx-auto mt-12 flex items-center justify-center gap-4 text-muted-foreground"
+      >
+        <Info className="h-8 w-8" />
+        <div>
+          <AlertTitle className="text-lg font-semibold">{title}</AlertTitle>
+          <AlertDescription className="text-sm">{message}</AlertDescription>
+        </div>
+      </Alert>
+    </div>
   );
 };
 

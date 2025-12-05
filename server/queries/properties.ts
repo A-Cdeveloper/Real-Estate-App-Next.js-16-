@@ -6,6 +6,7 @@ import {
 } from "@/lib/constants";
 import { PropertyFilters, PropertySort } from "@/types/properties";
 import { parsePropertySort } from "@/lib/utils/sortingParcer";
+import { PropertyStatus } from "@prisma/client";
 
 /**
  * Get latest properties
@@ -19,6 +20,7 @@ export async function getLatestProperties(
     const properties = await prisma.property.findMany({
       take,
       orderBy: { createdAt: "desc" },
+      where: { status: "APPROVED" },
     });
     return properties;
   } catch (error) {
@@ -37,7 +39,7 @@ export async function getPromotedProperties(
 ) {
   try {
     const properties = await prisma.property.findMany({
-      where: { promoted: true },
+      where: { promoted: true, status: "APPROVED" },
       take,
       orderBy: { createdAt: "desc" },
     });
@@ -78,6 +80,7 @@ export async function getAllProperties(
           ...(maxPrice && { lte: maxPrice }),
         },
       }),
+      status: PropertyStatus.APPROVED,
     };
 
     const { field, order } = parsePropertySort(sort);
@@ -116,6 +119,7 @@ export async function getRecentPropertyIds(limit: number = 50) {
       select: { id: true },
       take: limit,
       orderBy: { createdAt: "desc" },
+      where: { status: "APPROVED" },
     });
     return properties.map((item) => item.id);
   } catch (error) {
@@ -132,7 +136,7 @@ export async function getRecentPropertyIds(limit: number = 50) {
 export async function getPropertyById(id: string) {
   try {
     const property = await prisma.property.findUnique({
-      where: { id },
+      where: { id, status: PropertyStatus.APPROVED },
       include: {
         owner: {
           select: {
@@ -170,10 +174,13 @@ export async function getPropertyStats() {
 
     const [total, addedLastWeek, propertiesWithArea] = await Promise.all([
       // Total count
-      prisma.property.count(),
+      prisma.property.count({
+        where: { status: PropertyStatus.APPROVED },
+      }),
       // Count added in last week
       prisma.property.count({
         where: {
+          status: PropertyStatus.APPROVED,
           createdAt: {
             gte: oneWeekAgo,
           },
@@ -182,6 +189,7 @@ export async function getPropertyStats() {
       // Get properties with area for average calculation
       prisma.property.findMany({
         where: {
+          status: PropertyStatus.APPROVED,
           area: {
             not: null,
           },

@@ -6,6 +6,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { CAROUSEL_MIN_ITEMS_COUNT } from "@/lib/constants";
 
 const CarouselCustum = <T,>({
   items,
@@ -31,8 +32,12 @@ const CarouselCustum = <T,>({
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious className="left-0" />
-      <CarouselNext className="right-0" />
+      {items.length > CAROUSEL_MIN_ITEMS_COUNT && (
+        <>
+          <CarouselPrevious className="left-0" />
+          <CarouselNext className="right-0" />
+        </>
+      )}
     </Carousel>
   );
 };
