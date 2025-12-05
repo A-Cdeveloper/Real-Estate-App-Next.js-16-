@@ -27,12 +27,14 @@ export const ContactEmail = ({
   logoLight,
 }: ContactEmailProps) => {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  
+
   // If logoLight is already a full URL (starts with http:// or https://), use it as is
   // Otherwise, prepend siteUrl to make it a full URL
-  const logoUrl = logoLight.startsWith("http://") || logoLight.startsWith("https://")
-    ? logoLight
-    : `${siteUrl}${logoLight}`;
+  const logoUrl =
+    logoLight &&
+    (logoLight.startsWith("http://") || logoLight.startsWith("https://"))
+      ? logoLight
+      : `${siteUrl}${logoLight || "/real-estate-logo.png"}`;
 
   return (
     <Html>
@@ -62,12 +64,13 @@ export const ContactEmail = ({
             <Text style={messageText}>{message}</Text>
           </Section>
         </Container>
+
+        <Container style={footer}>
+          <Text style={footerText}>
+            {COPYRIGHT.text} {COPYRIGHT.year} {appName}.
+          </Text>
+        </Container>
       </Body>
-      <Container style={footer}>
-        <Text style={footerText}>
-          {COPYRIGHT.text} {COPYRIGHT.year} {appName}.
-        </Text>
-      </Container>
     </Html>
   );
 };
@@ -89,7 +92,7 @@ const logoContainer = {
 const container = {
   backgroundColor: "#fff",
   margin: "0 auto",
-  padding: "20px 0 20px 20px",
+  padding: "20px 20px 20px 20px",
   marginBottom: "4px",
   borderBottom: "1px solid #e0e0e0",
   borderTop: "1px solid #e0e0e0",

@@ -27,9 +27,10 @@ export const PasswordResetEmail = ({
   // If logoLight is already a full URL (starts with http:// or https://), use it as is
   // Otherwise, prepend siteUrl to make it a full URL
   const logoUrl =
-    logoLight.startsWith("http://") || logoLight.startsWith("https://")
+    logoLight &&
+    (logoLight.startsWith("http://") || logoLight.startsWith("https://"))
       ? logoLight
-      : `${siteUrl}${logoLight}`;
+      : `${siteUrl}${logoLight || "/real-estate-logo.png"}`;
 
   return (
     <Html>
@@ -85,7 +86,7 @@ const logoContainer = {
 const container = {
   backgroundColor: "#fff",
   margin: "0 auto",
-  padding: "20px 0 20px 20px",
+  padding: "20px 20px 20px 20px",
   marginBottom: "4px",
   borderBottom: "1px solid #e0e0e0",
   borderTop: "1px solid #e0e0e0",
