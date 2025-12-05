@@ -24,12 +24,19 @@ export const PasswordResetEmail = ({
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const resetUrl = `${siteUrl}/reset-password?token=${resetToken}`;
 
+  // If logoLight is already a full URL (starts with http:// or https://), use it as is
+  // Otherwise, prepend siteUrl to make it a full URL
+  const logoUrl =
+    logoLight.startsWith("http://") || logoLight.startsWith("https://")
+      ? logoLight
+      : `${siteUrl}${logoLight}`;
+
   return (
     <Html>
       <Head />
       <Body style={main}>
         <Container style={logoContainer}>
-          <Img src={`${siteUrl}${logoLight}`} alt="Logo" width="140" />
+          <Img src={logoUrl} alt="Logo" width="140" />
         </Container>
         <Container style={container}>
           <Section style={section}>
